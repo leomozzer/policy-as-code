@@ -12,17 +12,8 @@ inputs:
   AZURE_SP:
     description: "Credentials of the Azure SP"
     required: true
-  RESOURCE_GROUP_NAME:
-    description: "Resource Group of storage account"
-    required: true
   STORAGE_ACCOUNT_NAME:
     description: "Name of the storage account"
-    required: true
-  CONTAINER_NAME:
-    description: "Container name"
-    required: true
-  STATE_FILE:
-    description: "Name of the state files"
     required: true
   STAGE:
     description: "Deployment stage"
