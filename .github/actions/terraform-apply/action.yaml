@@ -43,12 +43,13 @@ runs:
       with:
         azcliversion: ${{ inputs.AZURE_CLI_VERSION }}
         inlineScript: |
+          mkdir apply
           az storage blob download \
           --file terraform-live.tar \
           --name terraform-live-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
           --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
           --container-name plans
-          tar -xvf terraform-live.tar -C terraform-live
+          tar -xvf terraform-live.tar -C ./apply/terraform-live
 
     - name: Copy ${{ inputs.STAGE }} modules from Storage
       uses: azure/CLI@v1
@@ -60,7 +61,7 @@ runs:
           --name terraform-modules-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
           --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
           --container-name plans
-          tar -xvf terraform-modules.tar -C terraform-modules
+          tar -xvf terraform-modules.tar -C ./apply/terraform-modules
 
     - name: map dir
       shell: bash
@@ -72,4 +73,10 @@ runs:
       shell: bash
       run:
         ls -ltr
-      working-directory: ${{ inputs.WORKING_DIR }}/terraform-live
+      working-directory: ${{ inputs.WORKING_DIR }}/apply
+
+    - name: map dir
+      shell: bash
+      run:
+        ls -ltr
+      working-directory: ${{ inputs.WORKING_DIR }}/apply/terraform-live
