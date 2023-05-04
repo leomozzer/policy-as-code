@@ -93,6 +93,7 @@ runs:
             --file terraform-live-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
             --name terraform-live-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
             --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }}
+            --overwrite
 
     - name: Archive terraform-modules
       uses: a7ul/tar-action@v1.1.0
@@ -114,3 +115,4 @@ runs:
             --file terraform-modules-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
             --name terraform-modules-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
             --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }}
+            --overwrite
