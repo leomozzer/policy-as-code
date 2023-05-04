@@ -181,9 +181,6 @@
                 "logAnalytics": {
                   "value": "[parameters('logAnalytics')]"
                 },
-                "logAnalyticsId": {
-                  "value": "[resourceId('Microsoft.OperationalInsights/workspaces', concat(parameters('logAnalytics'), '-', parameters('environment')))]"
-                },
                 "metricsEnabled": {
                   "value": "[parameters('metricsEnabled')]"
                 },
