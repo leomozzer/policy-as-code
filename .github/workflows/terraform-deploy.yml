@@ -1,0 +1,71 @@
+
+name: 'Terraform Deploy'
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v3
+
+      - name: tfsec
+        shell: bash
+        run: |
+          mkdir TFSecReport
+          docker pull aquasec/tfsec:latest
+          docker run --rm -v ./terraform-live:/src aquasec/tfsec ./src --format JUnit > ./TFSecReport/TFSec-Report.xml
+          docker run --rm -v ./terraform-live:/src aquasec/tfsec ./src
+
+  plan:
+    strategy:
+      matrix:
+        stage: [dev]
+    runs-on: ubuntu-latest
+    defaults:
+     run:
+       shell: bash
+       # We keep Terraform files in the terraform directory.
+       working-directory: ./terraform-live
+    concurrency: ${{ matrix.stage }}
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: jungwinter/split@v2
+      id: split
+      with:
+        msg: ${{ github.repository }}
+        separator: "/"
+
+    - uses: "./.github/actions/azure-backend"
+      with:
+        AZURE_SP: ${{ secrets.AZURE_SP }}
+        RESOURCE_GROUP_NAME: "policy-as-code-tfstate-${{ matrix.stage }}-rg"
+        RESOURCE_GROUP_LOCATION: "eastus"
+        TAGS: '"UseCase=Terraform" "Stage=${{ github.job }}" "Deployed=GitHub Actions" Repository=${{ steps.split.outputs._1 }} "RunNumber=${{ github.run_number }}"'
+        STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
+
+    - uses: "./.github/actions/terraform-plan"
+      with:
+        WORKING_DIR: "."
+        AZURE_SP: ${{ secrets.AZURE_SP }}
+        RESOURCE_GROUP_NAME: "policy-as-code-tfstate-${{ matrix.stage }}-rg"
+        STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
+        CONTAINER_NAME: "states"
+        STATE_FILE: "policy-as-code.tfstate"
+        STAGE: "${{ matrix.stage }}"

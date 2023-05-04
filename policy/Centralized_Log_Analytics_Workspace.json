@@ -1,0 +1,183 @@
+{
+    "properties":{
+        "displayName": "Centralized Log Analytics Workspace",
+        "policyType": "Custom",
+        "mode": "All",
+        "description": "Deploy resource group containing Log Analytics workspace and to centralize logs and monitoring",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Monitoring"
+        },
+        "parameters": {
+            "environment": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "environment",
+                    "description": "Provide environment name"
+                },
+                "defaultValue": "prod"
+            },
+            "workspaceName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "workspaceName",
+                    "description": "Provide name for log analytics workspace"
+                },
+                "defaultValue": "central-law"
+            },
+            "workspaceRegion": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "workspaceRegion",
+                    "description": "Enter Azure region for Log Analytics workspace",
+                    "strongType": "location"
+                },
+                "defaultValue": "eastus"
+            },
+            "sku": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "sku",
+                    "description": "Select pricing tier. Legacy tiers (Free, Standalone, PerNode, Standard or Premium) are not available to all customers"
+                },
+                "allowedValues": [
+                    "pergb2018",
+                    "Free",
+                    "Standalone",
+                    "PerNode",
+                    "Standard",
+                    "Premium"
+                ],
+                "defaultValue": "pergb2018"
+            },
+            "dataRetention": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "dataRetention",
+                    "description": "Enter the retention period in workspace, can be between 7 to 730 days. Billing is per 30 days at the minimum even when retention is shorter"
+                },
+                "defaultValue": "30"
+            },
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Select DeployIfNotExists to deploy central Log Analytics workspace, Audit or Disable to disable the execution of the policy"
+                },
+                "allowedValues": [
+                    "DeployIfNotExists",
+                    "AuditIfNotExists",
+                    "Disabled"
+                ],
+                "defaultValue": "DeployIfNotExists"
+            }
+        },
+        "policyRule": {
+            "if": {
+                "field": "type",
+                "equals": "Microsoft.Resources/subscriptions"
+            },
+            "then": {
+                "effect": "[parameters('effect')]",
+                "details": {
+                    "type": "Microsoft.OperationalInsights/workspaces",
+                    "name": "[concat(parameters('workspaceName'), '-', parameters('environment'))]",
+                    "ResourceGroupName": "[concat(parameters('workspaceName'), '-', parameters('environment'), '-rg')]",
+                    "existenceScope": "resourcegroup",
+                    "deploymentScope": "Subscription",
+                    "roleDefinitionIds": [
+                        "/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                    ],
+                    "deployment": {
+                        "location": "East US",
+                        "properties": {
+                            "mode": "incremental",
+                            "parameters": {
+                                "workspaceName": {
+                                    "value": "[parameters('workspaceName')]"
+                                },
+                                "workspaceRegion": {
+                                    "value": "[parameters('workspaceRegion')]"
+                                },
+                                "dataRetention": {
+                                    "value": "[parameters('dataRetention')]"
+                                },
+                                "sku": {
+                                    "value": "[parameters('sku')]"
+                                },
+                                "environment": {
+                                    "value": "[parameters('environment')]"
+                                }
+                            },
+                            "template": {
+                                "$schema": "http://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                                "contentVersion": "1.0.0.0",
+                                "parameters": {
+                                    "workspaceName": {
+                                        "type": "String"
+                                    },
+                                    "workspaceRegion": {
+                                        "type": "String"
+                                    },
+                                    "dataRetention": {
+                                        "type": "String"
+                                    },
+                                    "sku": {
+                                        "type": "String"
+                                    },
+                                    "environment": {
+                                        "type": "String"
+                                    }
+                                },
+                                "variables": {},
+                                "resources": [
+                                    {
+                                        "type": "Microsoft.Resources/resourceGroups",
+                                        "apiVersion": "2020-06-01",
+                                        "name": "[concat(parameters('workspaceName'), '-', parameters('environment'), '-rg')]",
+                                        "location": "[parameters('workspaceRegion')]",
+                                        "properties": {}
+                                    },
+                                    {
+                                        "type": "Microsoft.Resources/deployments",
+                                        "apiVersion": "2021-04-01",
+                                        "name": "[concat(parameters('workspaceName'), '-', parameters('environment'))]",
+                                        "resourceGroup": "[concat(parameters('workspaceName'), '-', parameters('environment'), '-rg')]",
+                                        "dependsOn": [
+                                            "[resourceId('Microsoft.Resources/resourceGroups/', concat(parameters('workspaceName'), '-', parameters('environment'), '-rg'))]"
+                                        ],
+                                        "properties": {
+                                            "mode": "Incremental",
+                                            "template": {
+                                                "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+                                                "contentVersion": "1.0.0.0",
+                                                "parameters": {},
+                                                "variables": {},
+                                                "resources": [
+                                                    {
+                                                        "apiVersion": "2020-08-01",
+                                                        "location": "[parameters('workspaceRegion')]",
+                                                        "name": "[concat(parameters('workspaceName'), '-', parameters('environment'))]",
+                                                        "type": "Microsoft.OperationalInsights/workspaces",
+                                                        "properties": {
+                                                            "sku": {
+                                                                "name": "[parameters('sku')]"
+                                                            },
+                                                            "retentionInDays": "[parameters('dataRetention')]",
+                                                            "enableLogAccessUsingOnlyResourcePermissions": true
+                                                        }
+                                                    }
+                                                ],
+                                                "outputs": {}
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
