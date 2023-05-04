@@ -84,7 +84,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - uses: "./.github/actions/terraform-plan"
+    - uses: "./.github/actions/terraform-apply"
       with:
         WORKING_DIR: "."
         AZURE_SP: ${{ secrets.AZURE_SP }}
