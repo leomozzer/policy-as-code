@@ -1,5 +1,5 @@
 module "subscription_policy" {
-  source = "../terraform-modules/policy-subscription-json-file"
+  source = "../terraform-modules/policy-subscription-file"
   for_each = {
     for index, policy in var.subscription_policy_rules : policy.name => policy
   }
