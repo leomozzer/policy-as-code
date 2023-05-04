@@ -62,14 +62,8 @@ runs:
           --container-name plans
           tar -xvf terraform-modules.tar -C ./
 
-    - name: map dir
+    - name: Terraform Apply
       shell: bash
       run:
-        ls -ltr
-      working-directory: ${{ inputs.WORKING_DIR }}
-
-    - name: map dir
-      shell: bash
-      run:
-        ls -ltr
+        terraform apply -lock-timeout=10m "${{ inputs.STAGE }}.plan"
       working-directory: ${{ inputs.WORKING_DIR }}/terraform-live
