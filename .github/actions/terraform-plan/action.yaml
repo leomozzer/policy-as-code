@@ -92,7 +92,7 @@ runs:
             --container-name plans \
             --file terraform-live-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
             --name terraform-live-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
-            --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }}
+            --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
             --overwrite
 
     - name: Archive terraform-modules
@@ -114,5 +114,5 @@ runs:
             --container-name plans \
             --file terraform-modules-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
             --name terraform-modules-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
-            --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }}
+            --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
             --overwrite
