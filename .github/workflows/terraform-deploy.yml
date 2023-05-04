@@ -71,6 +71,7 @@ jobs:
         STAGE: "${{ matrix.stage }}"
 
   apply:
+    needs: plan
     strategy:
       matrix:
         stage: [dev]
