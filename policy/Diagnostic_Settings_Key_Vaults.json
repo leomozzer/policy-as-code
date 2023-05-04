@@ -87,7 +87,7 @@
               },
               {
                 "field": "Microsoft.Insights/diagnosticSettings/workspaceId",
-                "equals": "[resourceId('Microsoft.OperationalInsights/workspaces', concat(parameters('logAnalytics'), '-', parameters('environment')))]"
+                "equals": "[concat(parameters('logAnalytics'), '-', parameters('environment'))]"
               }
             ]
           },
