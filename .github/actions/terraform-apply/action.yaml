@@ -43,7 +43,22 @@ runs:
       with:
         azcliversion: ${{ inputs.AZURE_CLI_VERSION }}
         inlineScript: |
+          az storage blob download \
+          --file terraform-live.tar \
+          --name terraform-live-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
+          --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
+          --container-name plans
+          tar -xvf terraform-live.tar -C terraform-live
+
           ls -ltr
+
+    - name: Copy ${{ inputs.STAGE }} live plan from Storage
+      uses: azure/CLI@v1
+      with:
+        azcliversion: ${{ inputs.AZURE_CLI_VERSION }}
+        inlineScript: |
+          ls -ltr
+        working-directory: ${{ inputs.WORKING_DIR }}/terraform-live
 
     # - name: Terraform fmt
     #   id: fmt
@@ -95,11 +110,13 @@ runs:
     #   with:
     #     azcliversion: ${{ inputs.AZURE_CLI_VERSION }}
     #     inlineScript: |
-    #       az storage blob upload \
-    #         --container-name plans \
-    #         --file terraform-live-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
-    #         --name terraform-live-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
-    #         --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }}
+    #       az storage blob download \
+    #       --file terraform-live.tar \
+    #       --name terraform-live-${{ inputs.STAGE }}-${{ github.run_number }}.tar \
+    #       --account-name ${{ inputs.STORAGE_ACCOUNT_NAME }} \
+    #       --container-name plans
+    #       tar -xvf terraform-live.tar -C terraform-live
+    #       ls -ltr
 
     # - name: Archive terraform-modules
     #   uses: a7ul/tar-action@v1.1.0
