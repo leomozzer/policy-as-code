@@ -87,7 +87,7 @@
               },
               {
                 "field": "Microsoft.Insights/diagnosticSettings/workspaceId",
-                "equals": "[parameters('logAnalytics')]"
+                "equals": "[concat(split(resourceId('Microsoft.KeyVault/vaults', parameters('resourceName')), '/resourceGroups/')[0], '/resourceGroups/', concat(parameters('logAnalytics'), '-', parameters('environment'), '-rg'), '/providers/microsoft.operationalinsights/workspaces/', parameters('logAnalytics'), '-', parameters('environment'))]"
               }
             ]
           },
