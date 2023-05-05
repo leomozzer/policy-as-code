@@ -21,3 +21,4 @@ policy_rules = [
     category         = "Monitoring"
   }
 ]
+management_group = "lso-management-group"

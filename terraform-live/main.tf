@@ -1,4 +1,7 @@
 data "azurerm_subscription" "current" {}
+data "azurerm_management_group" "management_group" {
+  name = var.management_group
+}
 
 module "subscription_definition" {
   source  = "gettek/policy-as-code/azurerm//modules/definition"
@@ -11,7 +14,7 @@ module "subscription_definition" {
   policy_description  = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.description
   policy_category     = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.metadata.category
   policy_version      = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.metadata.version
-  management_group_id = data.azurerm_subscription.current.id
+  management_group_id = data.azurerm_management_group.management_group.id
   policy_rule         = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.policyRule
   policy_parameters   = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.parameters
   policy_metadata     = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.metadata
