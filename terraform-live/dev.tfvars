@@ -19,6 +19,13 @@ policy_rules = [
     file_name        = "Diagnostic Settings Key Vaults"
     location         = "eastus"
     category         = "Monitoring"
+  },
+  {
+    name             = "deny-new-laws"
+    skip_remediation = false
+    file_name        = "Deny Creation New Log Analytics Workspace"
+    location         = "eastus"
+    category         = "Monitoring"
   }
 ]
 management_group = "lso-management-group"

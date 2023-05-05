@@ -1,0 +1,47 @@
+{
+    "properties": {
+      "displayName": "Deny Creation of New Log Analytics Workspace",
+      "policyType": "Custom",
+      "mode": "All",
+      "description": "This policy denies the creation of a new log analytics workspace",
+      "metadata": {
+        "category": "Monitoring",
+        "version": "1.0.0"
+      },
+      "parameters": {
+        "environment": {
+          "type": "String",
+          "metadata": {
+            "displayName": "environment",
+            "description": "Provide environment name"
+          },
+          "defaultValue": "prod"
+        },
+        "workspaceName": {
+          "type": "String",
+          "metadata": {
+            "displayName": "workspaceName",
+            "description": "Provide name for log analytics workspace"
+          },
+          "defaultValue": "central-law"
+        }
+      },
+      "policyRule": {
+        "if": {
+          "allOf": [
+            {
+              "field": "type",
+              "equals": "Microsoft.OperationalInsights/workspaces"
+            },
+            {
+              "field": "name",
+              "notEquals": "[concat(parameters('workspaceName'), '-', parameters('environment'))]"
+            }
+          ]
+        },
+        "then": {
+          "effect": "Deny"
+        }
+      }
+    }
+  }
