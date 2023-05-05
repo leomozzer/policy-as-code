@@ -1,3 +1,3 @@
-variable "subscription_policy_rules" {
+variable "policy_rules" {
   type = any
 }
