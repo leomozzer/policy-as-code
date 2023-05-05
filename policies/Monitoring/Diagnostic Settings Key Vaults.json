@@ -129,7 +129,7 @@
                     "location": "[parameters('location')]",
                     "dependsOn": [],
                     "properties": {
-                      "workspaceId": "[concat(split(resourceId('Microsoft.KeyVault/vaults', parameters('resourceName')), '/resourceGroups/')[0], '/resourceGroups/', concat(parameters('logAnalytics'), '-', parameters('environment'), '-rg'), '/providers/microsoft.operationalinsights/workspaces/', parameters('logAnalytics'), '-', parameters('environment'))]",
+                      "workspaceId": "[resourceId('Microsoft.OperationalInsights/workspaces', concat(parameters('logAnalytics'), '-', parameters('environment')))]",
                       "metrics": [
                         {
                           "category": "AllMetrics",
