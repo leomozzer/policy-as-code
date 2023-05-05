@@ -1,5 +1,5 @@
 locals {
-  policy = jsondecode(file("../policy/${var.file_name}.json"))
+  policy = jsondecode(file("../policies/Custom/${var.file_name}.json"))
 }
 
 resource "azurerm_policy_definition" "policy_definition" {
