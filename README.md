@@ -4,7 +4,7 @@ Repository that contains a list of policies created and implemented in my curren
 
 It was created modules to handle the deployment over subscriptions and management groups.
 
-A github action was also implemented to perform the CI/CD of the deployment
+A github action was also implemented to perform the CI/CD of the deployment.
 
 ## Modules
 
@@ -22,3 +22,5 @@ A github action was also implemented to perform the CI/CD of the deployment
   ```
 - policy-management-group
   - Under construction...
+- [policy-as-code]
+  - Using the module available [here](https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/latest)
