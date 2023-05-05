@@ -1,10 +1,10 @@
 policy_rules = [
   {
-    name              = "centralized-law"
-    create_assignment = true
-    file_name         = "Centralized Log Analytics Workspace"
-    location          = "eastus"
-    category          = "Monitoring"
+    name             = "centralized-law"
+    skip_remediation = false
+    file_name        = "Centralized Log Analytics Workspace"
+    location         = "eastus"
+    category         = "Monitoring"
   },
   {
     name             = "diagnostic-settings-storage-accounts"
