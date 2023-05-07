@@ -89,3 +89,9 @@ jobs:
         AZURE_SP: ${{ secrets.AZURE_SP }}
         STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
         STAGE: "${{ matrix.stage }}"
+
+    - uses: "./.github/actions/remove-blob"
+      with:
+        AZURE_SP: ${{ secrets.AZURE_SP }}
+        STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
+        STAGE: "${{ matrix.stage }}"
