@@ -26,7 +26,6 @@ runs:
 
     - name: Check old terraform-live files
       uses: azure/CLI@v1
-      shell: "pwsh"
       with:
         azcliversion: ${{ inputs.AZURE_CLI_VERSION }}
         inlineScript: |
@@ -39,7 +38,6 @@ runs:
     
     - name: Check old terraform-modules files
       uses: azure/CLI@v1
-      shell: "pwsh"
       with:
         azcliversion: ${{ inputs.AZURE_CLI_VERSION }}
         inlineScript: |
