@@ -20,6 +20,7 @@ env:
 
 jobs:
   audit:
+    name: "Audit"
     permissions:
       contents: read
       pull-requests: write
