@@ -47,7 +47,7 @@ jobs:
 
   plan:
     name: "Plan Job"
-    needs: [audit, infracost, check]
+    needs: [check]
     if: needs.check.outputs.run_job == 'true' && ${{ github.event.workflow_run.conclusion == 'success' }}
     strategy:
       matrix:
