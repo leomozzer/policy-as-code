@@ -20,6 +20,8 @@ env:
 jobs:
   testingTemplate:
     uses: leomozzer/terraform-template/.github/workflows/terraform-deploy.yml@main
+    with:
+      WORKING_DIR: "./terraform-live"
     secrets:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
