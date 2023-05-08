@@ -19,6 +19,9 @@ env:
 
 jobs:
   testingTemplate:
+    permissions:
+      contents: read
+      pull-requests: write
     uses: leomozzer/terraform-template/.github/workflows/terraform-deploy.yml@main
     with:
       WORKING_DIR: "./terraform-live"
