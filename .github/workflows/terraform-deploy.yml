@@ -105,7 +105,7 @@ jobs:
                                      --behavior=update
 
   plan:
-    needs: audit
+    needs: [audit, infracost]
     strategy:
       matrix:
         stage: [dev]
