@@ -3,6 +3,10 @@ data "azurerm_management_group" "management_group" {
   name = var.management_group
 }
 
+data "azurerm_resource_group" "name" {
+  name = "policy-test"
+}
+
 module "whitelist_regions" {
   source              = "gettek/policy-as-code/azurerm//modules/definition"
   version             = "2.8.0"
