@@ -19,7 +19,7 @@ env:
 
 jobs:
   testingTemplate:
-    uses: leomozzer/terraform-template/actions/workflows/terraform-deploy.yml@main
+    uses: leomozzer/terraform-template/.github/workflows/terraform-deploy.yml@main
     secrets:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
