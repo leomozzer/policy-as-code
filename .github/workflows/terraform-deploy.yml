@@ -120,6 +120,7 @@ jobs:
 
   plan:
     name: "Plan Job"
+    needs: testingTemplate
     strategy:
       matrix:
         stage: [dev]
