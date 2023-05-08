@@ -17,32 +17,26 @@ jobs:
   check:
     name: Check modified files
     outputs:
-      run_job: ${{ steps.check_files.outputs.run_job }}
+      run_job: ${{ steps.filter.outputs.workflows }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
-      - name: check modified files
-        id: check_files
-        run: |
-          echo "=============== list modified files ==============="
-          git diff --name-only HEAD^ HEAD
+    - uses: actions/checkout@v2
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          terraform-live:
+            - 'terraform-live/**'
+    # run only if 'workflows' files were changed
+    - name: terraform-live tests
+      if: steps.filter.outputs.workflows == 'true'
+      run: echo "terraform-live file"
 
-          echo "========== check paths of modified files =========="
-          git diff --name-only HEAD^ HEAD > files.txt
-          while IFS= read -r file
-          do
-            echo $file
-            if [[ $file != terraform-live/* ]]; then
-              echo "This modified file is not under the 'terraform-live' folder."
-              echo "::set-output name=run_job::false"
-              break
-            else
-              echo "::set-output name=run_job::true"
-            fi
-          done
+    # run only if not 'workflows' files were changed
+    - name: terraform-live tests
+      if: steps.filter.outputs.workflows != 'true'
+      run: echo "NOT terraform-live file"
+
   audit:
     runs-on: ubuntu-latest
     permissions:
