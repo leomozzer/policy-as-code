@@ -77,8 +77,7 @@ runs:
       shell: bash
       run: |
         docker pull aquasec/tfsec:latest
-        docker run --rm -v "$(pwd)/terraform-live/.terraform/modules/def_assignment:/src" aquasec/tfsec ./src
-        docker rmi "aquasec/tfsec:latest" -f | true
+        docker run --rm -v "$(pwd)/terraform-live/.terraform/modules:/src" aquasec/tfsec ./src
 
     - name: Archive terraform-live and plan
       uses: a7ul/tar-action@v1.1.0
