@@ -3,18 +3,18 @@ data "azurerm_management_group" "management_group" {
   name = var.management_group
 }
 
-module whitelist_regions {
+module "whitelist_regions" {
   source              = "gettek/policy-as-code/azurerm//modules/definition"
-  version = "2.8.0"
+  version             = "2.8.0"
   policy_name         = "whitelist_regions"
   display_name        = "Allow resources only in whitelisted regions"
   policy_category     = "General"
   management_group_id = data.azurerm_management_group.management_group.id
 }
 
-module org_mg_whitelist_regions {
+module "org_mg_whitelist_regions" {
   source            = "gettek/policy-as-code/azurerm//modules/def_assignment"
-  version = "2.8.0"
+  version           = "2.8.0"
   definition        = module.whitelist_regions.definition
   assignment_scope  = data.azurerm_management_group.management_group.id
   assignment_effect = "Deny"
