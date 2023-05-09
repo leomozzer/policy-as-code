@@ -22,64 +22,39 @@ jobs:
       INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
 
   plan:
-    name: "Terraform"
+    name: "Plan Job"
     needs: audit
     strategy:
       matrix:
         stage: [dev]
+    runs-on: ubuntu-latest
     concurrency: ${{ matrix.stage }}
-    # steps:
-    # - uses: actions/checkout@v3
+    steps:
+    - uses: actions/checkout@v3
 
-    # - uses: jungwinter/split@v2
-    #   id: split
-    #   with:
-    #     msg: ${{ github.repository }}
-    #     separator: "/"
-    uses: leomozzer/terraform-template/.github/workflows/terraform-plan.yml@main
-    with:
-      TERRAFORM_WORKING_DIR: "terraform-live"
-      TERRAFORM_MODULES_DIR: "terraform-modules"
-      WORKING_DIR: "./"
-      RESOURCE_GROUP_NAME: "policy-as-code-tfstate-${{ matrix.stage }}-rg"
-      RESOURCE_GROUP_LOCATION: "eastus"
-      STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
-      CONTAINER_NAME: "states"
-      STATE_FILE: "policy-as-code.tfstate"
-      STAGE: ${{ matrix.stage }}
-      TAGS: '"UseCase=Terraform" "Environment=${{ matrix.stage }}" "Deployed=GitHub Actions" Repository="https://github.com/leomozzer/policy-as-code""RunNumber=${{ github.run_number }}"'
-    secrets:
-      AZURE_SP: ${{ secrets.AZURE_SP }}
-      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-    # steps:
-    # - uses: actions/checkout@v3
+    - uses: jungwinter/split@v2
+      id: split
+      with:
+        msg: ${{ github.repository }}
+        separator: "/"
 
-    # - uses: jungwinter/split@v2
-    #   id: split
-    #   with:
-    #     msg: ${{ github.repository }}
-    #     separator: "/"
+    - uses: "./.github/actions/azure-backend"
+      with:
+        AZURE_SP: ${{ secrets.AZURE_SP }}
+        RESOURCE_GROUP_NAME: "policy-as-code-tfstate-${{ matrix.stage }}-rg"
+        RESOURCE_GROUP_LOCATION: "eastus"
+        TAGS: '"UseCase=Terraform" "Stage=${{ github.job }}" "Deployed=GitHub Actions" Repository=${{ steps.split.outputs._1 }} "RunNumber=${{ github.run_number }}"'
+        STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
 
-    # - uses: "./.github/actions/azure-backend"
-    #   with:
-    #     AZURE_SP: ${{ secrets.AZURE_SP }}
-    #     RESOURCE_GROUP_NAME: "policy-as-code-tfstate-${{ matrix.stage }}-rg"
-    #     RESOURCE_GROUP_LOCATION: "eastus"
-    #     TAGS: '"UseCase=Terraform" "Stage=${{ github.job }}" "Deployed=GitHub Actions" Repository=${{ steps.split.outputs._1 }} "RunNumber=${{ github.run_number }}"'
-    #     STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
-
-    # - uses: "./.github/actions/terraform-plan"
-    #   with:
-    #     WORKING_DIR: "."
-    #     AZURE_SP: ${{ secrets.AZURE_SP }}
-    #     RESOURCE_GROUP_NAME: "policy-as-code-tfstate-${{ matrix.stage }}-rg"
-    #     STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
-    #     CONTAINER_NAME: "states"
-    #     STATE_FILE: "policy-as-code.tfstate"
-    #     STAGE: "${{ matrix.stage }}"
+    - uses: "./.github/actions/terraform-plan"
+      with:
+        WORKING_DIR: "."
+        AZURE_SP: ${{ secrets.AZURE_SP }}
+        RESOURCE_GROUP_NAME: "policy-as-code-tfstate-${{ matrix.stage }}-rg"
+        STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
+        CONTAINER_NAME: "states"
+        STATE_FILE: "policy-as-code.tfstate"
+        STAGE: "${{ matrix.stage }}"
 
   apply:
     name: "Apply Job"
