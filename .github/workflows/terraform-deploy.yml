@@ -56,7 +56,12 @@ jobs:
       STATE_FILE: "policy-as-code.tfstate"
       STAGE: ${{ matrix.stage }}
       TAGS: '"UseCase=Terraform" "Environment=${{ matrix.stage }}" "Deployed=GitHub Actions" Repository="https://github.com/leomozzer/policy-as-code""RunNumber=${{ github.run_number }}"'
-    secrets: inherit
+    secrets:
+      AZURE_SP: ${{ secrets.AZURE_SP }}
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
     # steps:
     # - uses: actions/checkout@v3
 
