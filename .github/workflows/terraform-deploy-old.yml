@@ -1,16 +1,7 @@
 
-name: 'Terraform Deploy'
+name: 'Terraform Deploy Old'
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'terraform-live/**'
-      - 'terraform-modules/**'
-      - 'policies/**'
-      - '.github/workflows/**'
   workflow_dispatch:
-  pull_request:
 
 env:
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -91,16 +82,24 @@ jobs:
     #     STAGE: "${{ matrix.stage }}"
 
   apply:
-    name: "Terraform"
+    name: "Apply Job"
     needs: plan
     strategy:
       matrix:
         stage: [dev]
-    uses: leomozzer/terraform-template/.github/workflows/terraform-apply.yml@main
-    with:
-      WORKING_DIR: "./"
-      STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
-      CONTAINER_NAME: "plans"
-      STAGE: ${{ matrix.stage }}
-    secrets:
-      AZURE_SP: ${{ secrets.AZURE_SP }}
+    runs-on: ubuntu-latest
+    environment: ${{ matrix.stage }}
+    defaults:
+     run:
+       shell: bash
+       # We keep Terraform files in the terraform directory.
+       working-directory: ./terraform-live
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: "./.github/actions/terraform-apply"
+      with:
+        WORKING_DIR: "."
+        AZURE_SP: ${{ secrets.AZURE_SP }}
+        STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
+        STAGE: "${{ matrix.stage }}"
