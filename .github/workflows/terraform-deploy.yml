@@ -30,8 +30,7 @@ jobs:
     secrets:
       INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
 
-  terraform:
-    name: "Terraform"
+  plan:
     needs: audit
     strategy:
       matrix:
