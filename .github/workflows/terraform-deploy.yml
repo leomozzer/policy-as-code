@@ -60,15 +60,15 @@ jobs:
         TAGS: '"UseCase=Terraform" "Stage=${{ github.job }}" "Deployed=GitHub Actions" Repository=${{ steps.split.outputs._1 }} "RunNumber=${{ github.run_number }}"'
         STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
 
-    # - uses: "./.github/actions/terraform-plan"
-    #   with:
-    #     WORKING_DIR: "."
-    #     AZURE_SP: ${{ secrets.AZURE_SP }}
-    #     RESOURCE_GROUP_NAME: "policy-as-code-tfstate-${{ matrix.stage }}-rg"
-    #     STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
-    #     CONTAINER_NAME: "states"
-    #     STATE_FILE: "policy-as-code.tfstate"
-    #     STAGE: "${{ matrix.stage }}"
+    - uses: "./.github/actions/terraform-plan"
+      with:
+        WORKING_DIR: "."
+        AZURE_SP: ${{ secrets.AZURE_SP }}
+        RESOURCE_GROUP_NAME: "policy-as-code-tfstate-${{ matrix.stage }}-rg"
+        STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
+        CONTAINER_NAME: "states"
+        STATE_FILE: "policy-as-code.tfstate"
+        STAGE: "${{ matrix.stage }}"
 
   apply:
     name: "Apply Job"
