@@ -6,6 +6,37 @@ It was created modules to handle the deployment over subscriptions and managemen
 
 A github action was also implemented to perform the CI/CD of the deployment.
 
+## Repo Folder Structure
+
+```bash
+📂.github
+  └──📂actions
+      └──📂azure-backend
+          └──📜action.yaml
+      └──📂terraform-apply
+          └──📜action.yaml
+      └──📂terraform-plan
+          └──📜action.yaml
+  └──📂workflows
+      ├──📜terraform-deploy-old.yml
+      └──📜terraform-deploy.yml
+📂policies
+  └──📂Monitoring
+      ├──📜Centralized Log Analytics Workspace.json
+      ├──📜Deny Creation New Log Analytics Workspaces.json
+      ├──📜Diagnostic Settings Key Vaults.json
+      └──📜Diagnostic Settings Storage Account.json
+📂terraform-main
+  ├──📜main.tf
+  ├──📜outputs.tf
+  └──📜variables.tf
+📂terraform-modules
+  └──📂module1
+      ├──📜main.tf
+      ├──📜outputs.tf
+      └──📜variables.tf
+```
+
 ## Modules
 
 - policy-subscription-file:
@@ -24,3 +55,26 @@ A github action was also implemented to perform the CI/CD of the deployment.
   - Under construction...
 - [policy-as-code]
   - Using the module available [here](https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/latest)
+
+## Configuration
+
+### Variables
+
+```terraform
+policy_rules = [
+  {
+    name             = "centralized-law" #short name of the policy name
+    skip_remediation = false #manage the remediation task
+    file_name        = "Centralized Log Analytics Workspace" #Name of the file
+    location         = "eastus" #location where will be deployed
+    category         = "Monitoring" #Folder where the policy file is located
+  }
+]
+management_group = "management-group" #Add management group name
+```
+
+### Plan & Apply
+
+- Create a new file with dev.tfvars and add the values mentioned from the variables
+- Run the `terraform plan -var-file=dev.tfvars -out=dev.plan`
+- Run the `terraform apply dev.plan`
