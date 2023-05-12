@@ -2,7 +2,7 @@
 
 Repository that contains a list of policies created and implemented in my current Azure tenant.
 
-It was created modules to handle the deployment over subscriptions and management groups.
+It was created modules to handle the deployment over subscriptions and management groups. Also it was used an existing module that is mentioned below to test the deployment of policies.
 
 A github action was also implemented to perform the CI/CD of the deployment.
 
