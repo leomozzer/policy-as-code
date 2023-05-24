@@ -78,3 +78,14 @@ management_group = "management-group" #Add management group name
 - Create a new file with dev.tfvars and add the values mentioned from the variables
 - Run the `terraform plan -var-file=dev.tfvars -out=dev.plan`
 - Run the `terraform apply dev.plan`
+
+### GitHub Actions
+
+Add the variables in Github repository settings
+
+- ARM_CLIENT_ID
+- ARM_CLIENT_SECRET
+- ARM_SUBSCRIPTION_ID
+- ARM_TENANT_ID
+- AZURE_SP
+- INFRACOST_API_KEY

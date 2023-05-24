@@ -23,7 +23,8 @@ module "org_mg_whitelist_regions" {
     listOfRegionsAllowed = [
       "East US",
       "Central US",
-      "West Europe"
+      "West Europe",
+      "Global"
     ]
   }
 }
