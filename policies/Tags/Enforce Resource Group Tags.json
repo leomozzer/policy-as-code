@@ -48,7 +48,7 @@
             {
               "anyOf": [
                 {
-                  "field": "[concat('tags[', parameters('parameters'), ']')]",
+                  "field": "[concat('tags[', parameters('environment'), ']')]",
                   "exists": "false"
                 },
                 {
