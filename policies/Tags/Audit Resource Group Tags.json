@@ -1,9 +1,9 @@
 {
     "properties": {
-      "displayName": "Audit required tags",
+      "displayName": "Audit required resource group tags",
       "policyType": "BuiltIn",
       "mode": "Indexed",
-      "description": "Check if the tags Environment, UseCase, Deployed, MaintainedBy exists",
+      "description": "Check if the tags Environment, UseCase, Deployed, MaintainedBy exists in all the resources groups",
       "metadata": {
         "version": "1.0.0",
         "category": "Tags"
