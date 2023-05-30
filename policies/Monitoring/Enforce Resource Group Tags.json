@@ -1,0 +1,83 @@
+{
+    "properties": {
+      "displayName": "Audit required tags",
+      "policyType": "BuiltIn",
+      "mode": "Indexed",
+      "description": "Check if the tags Environment, UseCase, Deployed, MaintainedBy exists",
+      "metadata": {
+        "version": "1.0.0",
+        "category": "Tags"
+      },
+      "parameters": {
+        "environment": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Environment",
+            "description": "Environment tag such as prod, dev, test, etc."
+          }
+        },
+        "useCase": {
+            "type": "String",
+            "metadata": {
+              "displayName": "UseCase",
+              "description": "UseCase tag such as Terraform, Monitoring, etc."
+            }
+        },
+        "deployed": {
+            "type": "String",
+            "metadata": {
+              "displayName": "Deployed",
+              "description": "Deployed tag such as AzureDevOps,Github Actions, etc." 
+            }
+        },
+        "maintainedBy": {
+            "type": "String",
+            "metadata": {
+              "displayName": "MaintainedBy",
+              "description": "The person that is handling with the resource" 
+            }
+        }
+      },
+      "policyRule": {
+        "if": {
+          "anyOf": [
+            {
+              "field": "[concat('tags[', parameters('parameters'), ']')]",
+              "exists": "false"
+            },
+            {
+              "value": "[resourceGroup().tags[parameters('parameters')]]",
+              "notEquals": ""
+            },
+            {
+              "field": "[concat('tags[', parameters('useCase'), ']')]",
+              "exists": "false"
+            },
+            {
+              "value": "[resourceGroup().tags[parameters('useCase')]]",
+              "notEquals": ""
+            },
+            {
+              "field": "[concat('tags[', parameters('deployed'), ']')]",
+               "exists": "false"
+            },
+            {
+              "value": "[resourceGroup().tags[parameters('deployed')]]",
+              "notEquals": ""
+            },
+            {
+              "field": "[concat('tags[', parameters('maintainedBy'), ']')]",
+              "exists": "false"
+            },
+            {
+              "value": "[resourceGroup().tags[parameters('maintainedBy')]]",
+              "notEquals": ""
+            }
+          ]
+        },
+        "then": {
+          "effect": "audit"
+        }
+      }
+    }
+}

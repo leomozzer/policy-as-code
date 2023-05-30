@@ -1,4 +1,3 @@
-data "azurerm_subscription" "current" {}
 data "azurerm_management_group" "management_group" {
   name = var.management_group
 }
@@ -53,6 +52,6 @@ module "subscription_definition_def_assignment" {
     for index, policy in var.policy_rules : policy.name => policy
   }
   definition       = module.subscription_definition[each.value.name].definition
-  assignment_scope = data.azurerm_subscription.current.id
+  assignment_scope = data.azurerm_management_group.management_group.id
   skip_remediation = each.value.skip_remediation
 }
