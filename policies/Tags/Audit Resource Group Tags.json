@@ -1,8 +1,8 @@
 {
     "properties": {
       "displayName": "Audit required resource group tags",
-      "policyType": "BuiltIn",
-      "mode": "Indexed",
+      "policyType": "Custom",
+      "mode": "All",
       "description": "Check if the tags Environment, UseCase, Deployed, MaintainedBy exists in all the resources groups",
       "metadata": {
         "version": "1.0.0",
@@ -19,7 +19,11 @@
             {
               "anyOf": [
                 {
-                  "field": "[concat('tags[', 'Environment', ']')]",
+                  "field": "tags[Environment]",
+                  "exists": "false"
+                },
+                {
+                  "field": "tags[UseCase]",
                   "exists": "false"
                 }
               ]
