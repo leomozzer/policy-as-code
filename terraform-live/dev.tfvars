@@ -26,6 +26,13 @@ policy_rules = [
     file_name        = "Deny Creation New Log Analytics Workspace"
     location         = "eastus"
     category         = "Monitoring"
+  },
+  {
+    name             = "enforce-rg-tags"
+    skip_remediation = false
+    file_name        = "Enforce Resource Group Tags"
+    location         = "eastus"
+    category         = "Tags"
   }
 ]
 management_group = "lso-management-group"
