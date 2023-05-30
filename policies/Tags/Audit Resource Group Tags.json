@@ -19,19 +19,19 @@
             {
               "anyOf": [
                 {
-                  "field": "tags.Environment",
+                  "field": "[resourceGroup().tags.Environment]",
                   "exists": "false"
                 },
                 {
-                  "field": "tags.UseCase",
+                  "field": "[resourceGroup().tags.UseCase]",
                   "exists": "false"
                 },
                 {
-                  "field": "tags.Deployed",
+                  "field": "[resourceGroup().tags.Deployed]",
                   "exists": "false"
                 },
                 {
-                  "field": "tags.MaintainedBy",
+                  "field": "[resourceGroup().tags.MaintainedBy]",
                   "exists": "false"
                 }
               ]
