@@ -40,38 +40,30 @@
       },
       "policyRule": {
         "if": {
-          "anyOf": [
+          "allOf":[
             {
-              "field": "[concat('tags[', parameters('parameters'), ']')]",
-              "exists": "false"
+              "field": "type",
+              "equals": "Microsoft.Resources/subscriptions/resourceGroups"
             },
             {
-              "value": "[resourceGroup().tags[parameters('parameters')]]",
-              "notEquals": ""
-            },
-            {
-              "field": "[concat('tags[', parameters('useCase'), ']')]",
-              "exists": "false"
-            },
-            {
-              "value": "[resourceGroup().tags[parameters('useCase')]]",
-              "notEquals": ""
-            },
-            {
-              "field": "[concat('tags[', parameters('deployed'), ']')]",
-               "exists": "false"
-            },
-            {
-              "value": "[resourceGroup().tags[parameters('deployed')]]",
-              "notEquals": ""
-            },
-            {
-              "field": "[concat('tags[', parameters('maintainedBy'), ']')]",
-              "exists": "false"
-            },
-            {
-              "value": "[resourceGroup().tags[parameters('maintainedBy')]]",
-              "notEquals": ""
+              "anyOf": [
+                {
+                  "field": "[concat('tags[', parameters('parameters'), ']')]",
+                  "exists": "false"
+                },
+                {
+                  "field": "[concat('tags[', parameters('useCase'), ']')]",
+                  "exists": "false"
+                },
+                {
+                  "field": "[concat('tags[', parameters('deployed'), ']')]",
+                   "exists": "false"
+                },
+                {
+                  "field": "[concat('tags[', parameters('maintainedBy'), ']')]",
+                  "exists": "false"
+                }
+              ]
             }
           ]
         },
