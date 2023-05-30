@@ -30,7 +30,7 @@ policy_rules = [
   {
     name             = "enforce-rg-tags"
     skip_remediation = false
-    file_name        = "Enforce Resource Group Tags"
+    file_name        = "Audit Resource Group Tags"
     location         = "eastus"
     category         = "Tags"
   }
