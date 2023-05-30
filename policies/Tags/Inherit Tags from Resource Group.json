@@ -8,18 +8,27 @@
         "version": "1.0.0",
         "category": "Tags"
       },
-      "parameters": {},
+      "parameters": {
+        "environmentTag": {
+            "type": "String",
+            "defaultValue": "Environment"
+        },
+        "useCaseTag": {
+            "type": "String",
+            "defaultValue": "UseCase"
+        }
+      },
       "policyRule": {
         "if": {
           "anyOf": [
             {
                 "allOf":[
                     {
-                        "field": "tags[Environment]",
-                        "notEquals": "[resourceGroup().tags[Environment]]"
+                        "field": "[concat('tags[', parameters('environmentTag'), ']')]",
+                        "notEquals": "[resourceGroup().tags[parameters('environmentTag')]]"
                     },
                     {
-                        "value": "[resourceGroup().tags[Environment]]",
+                        "value": "[resourceGroup().tags[parameters('environmentTag')]]",
                         "notEquals": ""
                     }
                 ]
@@ -27,11 +36,11 @@
             {
                 "allOf":[
                     {
-                        "field": "tags[UseCase]",
-                        "notEquals": "[resourceGroup().tags[UseCase]]"
+                        "field": "[concat('tags[', parameters('useCaseTag'), ']')]",
+                        "notEquals": "[resourceGroup().tags[parameters('useCaseTag')]]"
                     },
                     {
-                        "value": "[resourceGroup().tags[UseCase]]",
+                        "value": "[resourceGroup().tags[parameters('useCaseTag')]]",
                         "notEquals": ""
                     }
                 ]
@@ -47,13 +56,13 @@
             "operations": [
               {
                 "operation": "addOrReplace",
-                "field": "tags[Environment]",
-                "value": "[resourceGroup().tags[Environment]]"
+                "field": "[concat('tags[', parameters('environmentTag'), ']')]",
+                "value": "[resourceGroup().tags[parameters('environmentTag')]]"
               },
               {
                 "operation": "addOrReplace",
-                "field": "tags[UseCase]",
-                "value": "[resourceGroup().tags[UseCase]]"
+                "field": "[concat('tags[', parameters('useCaseTag'), ']')]",
+                "value": "[resourceGroup().tags[parameters('useCaseTag')]]"
               }
             ]
           }
