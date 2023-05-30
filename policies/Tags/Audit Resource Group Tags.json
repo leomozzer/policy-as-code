@@ -25,6 +25,14 @@
                 {
                   "field": "tags[UseCase]",
                   "exists": "false"
+                },
+                {
+                  "field": "tags[Deployed]",
+                  "exists": "false"
+                },
+                {
+                  "field": "tags[MaintainedBy]",
+                  "exists": "false"
                 }
               ]
             }

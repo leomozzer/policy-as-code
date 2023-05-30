@@ -1,0 +1,63 @@
+{
+    "properties": {
+      "displayName": "Inherit tags from the resource group",
+      "policyType": "Custom",
+      "mode": "Indexed",
+      "description": "Adds or replaces the 'Environment' and 'UseCase' in the resource level",
+      "metadata": {
+        "version": "1.0.0",
+        "category": "Tags"
+      },
+      "parameters": {},
+      "policyRule": {
+        "if": {
+          "anyOf": [
+            {
+                "allOf":[
+                    {
+                        "field": "tags[Environment]",
+                        "notEquals": "[resourceGroup().tags[Environment]]"
+                    },
+                    {
+                        "value": "[resourceGroup().tags[Environment]]",
+                        "notEquals": ""
+                    }
+                ]
+            },
+            {
+                "allOf":[
+                    {
+                        "field": "tags[UseCase]",
+                        "notEquals": "[resourceGroup().tags[UseCase]]"
+                    },
+                    {
+                        "value": "[resourceGroup().tags[UseCase]]",
+                        "notEquals": ""
+                    }
+                ]
+            }
+          ]
+        },
+        "then": {
+          "effect": "modify",
+          "details": {
+            "roleDefinitionIds": [
+              "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+            ],
+            "operations": [
+              {
+                "operation": "addOrReplace",
+                "field": "tags[Environment]",
+                "value": "[resourceGroup().tags[Environment]]"
+              },
+              {
+                "operation": "addOrReplace",
+                "field": "tags[UseCase]",
+                "value": "[resourceGroup().tags[UseCase]]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
