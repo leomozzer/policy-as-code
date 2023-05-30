@@ -17,12 +17,6 @@ env:
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-  PROJECT_NAME: "policy-as-code"
-  TERRAFORM_WORKING_DIR: "terraform-live"
-  TERRAFORM_MODULES_DIR: "terraform-modules"
-  RESOURCE_GROUP_LOCATION: "eastus"
-  STORAGE_ACCOUNT_NAME: "stacpolicyascode"
-
 
 jobs:
   audit:
@@ -45,14 +39,14 @@ jobs:
     concurrency: ${{ matrix.stage }}
     uses: leomozzer/terraform-template/.github/workflows/terraform-plan.yml@main
     with:
-      TERRAFORM_WORKING_DIR: ${{ env.TERRAFORM_WORKING_DIR }}
-      TERRAFORM_MODULES_DIR: ${{ env.TERRAFORM_MODULES_DIR }}
+      TERRAFORM_WORKING_DIR: "terraform-live"
+      TERRAFORM_MODULES_DIR: "terraform-modules"
       WORKING_DIR: "./"
-      RESOURCE_GROUP_NAME: "${{ env.PROJECT_NAME }}-tfstate-${{ matrix.stage }}-rg"
-      RESOURCE_GROUP_LOCATION: ${{ env.RESOURCE_GROUP_LOCATION }}
-      STORAGE_ACCOUNT_NAME: "${{ env.STORAGE_ACCOUNT_NAME }}${{ matrix.stage }}"
+      RESOURCE_GROUP_NAME: "policy-as-code-tfstate-${{ matrix.stage }}-rg"
+      RESOURCE_GROUP_LOCATION: "eastus"
+      STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
       CONTAINER_NAME: "states"
-      STATE_FILE: "${{ env.PROJECT_NAME }}.tfstate"
+      STATE_FILE: "policy-as-code.tfstate"
       STAGE: ${{ matrix.stage }}
       TAGS: '"UseCase=Terraform" "Environment=${{ matrix.stage }}" "Deployed=GitHub Actions" Repository="https://github.com/leomozzer/policy-as-code" "RunNumber=${{ github.run_number }}"'
     secrets:
@@ -72,7 +66,7 @@ jobs:
     uses: leomozzer/terraform-template/.github/workflows/terraform-apply.yml@main
     with:
       WORKING_DIR: "./"
-      STORAGE_ACCOUNT_NAME: "${{ env.STORAGE_ACCOUNT_NAME }}${{ matrix.stage }}"
+      STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
       CONTAINER_NAME: "plans"
       STAGE: ${{ matrix.stage }}
     secrets:
