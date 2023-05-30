@@ -33,6 +33,13 @@ policy_rules = [
     file_name        = "Audit Resource Group Tags"
     location         = "eastus"
     category         = "Tags"
+  },
+  {
+    name             = "inherit-rg-tags"
+    skip_remediation = false
+    file_name        = "Inherit Tags from Resource Group"
+    location         = "eastus"
+    category         = "Tags"
   }
 ]
 management_group = "lso-management-group"
