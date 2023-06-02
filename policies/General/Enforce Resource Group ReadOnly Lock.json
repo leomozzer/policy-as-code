@@ -1,0 +1,68 @@
+{
+  "properties": {
+      "displayName": "Deploy ReadOnly Resource Lock on Resource Groups",
+      "description": "Creates a resource lock at the resource group level for preventing resources changing based on Tag values",
+      "mode": "all",
+      "metadata": {
+          "version": "1.0.0",
+          "category": "General"
+      },
+      "parameters": {
+        "environmentTagValue": {
+            "type": "String",
+            "defaultValue": "prod"
+        }
+      },
+      "policyRule": {
+          "if": {
+            "allOf":[
+              {
+                "field": "type",
+                "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+              },
+              {
+                "anyOf": [
+                  {
+                    "field": "tags[Environment]",
+                    "equals": "[parameters('environmentTagValue')]"
+                  }
+                ]
+              }
+            ]
+          },
+          "then": {
+              "effect": "DeployIfNotExists",
+              "details": {
+                  "type": "Microsoft.Authorization/locks",
+                  "existenceCondition": {
+                      "field": "Microsoft.Authorization/locks/level",
+                      "equals": "ReadOnly"
+                  },
+                  "roleDefinitionIds": [
+                      "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                  ],
+                  "deployment": {
+                      "properties": {
+                          "mode": "incremental",
+                          "template": {
+                              "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+                              "contentVersion": "1.0.0.0",
+                              "resources": [
+                                  {
+                                      "type": "Microsoft.Authorization/locks",
+                                      "apiVersion": "2017-04-01",
+                                      "name": "ReadOnly",
+                                      "properties": {
+                                          "level": "ReadOnly",
+                                          "notes": "Prevents deletion of resource group."
+                                      }
+                                  }
+                              ]
+                          }
+                      }
+                  }
+              }
+          }
+      }
+  }
+}

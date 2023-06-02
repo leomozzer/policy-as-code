@@ -41,5 +41,12 @@ policy_rules = [
     location         = "eastus"
     category         = "Tags"
   }
+  {
+    name             = "enforce-readonly-lock"
+    skip_remediation = false
+    file_name        = "Enforce Resource Group ReadOnly Lock"
+    location         = "eastus"
+    category         = "General"
+  }
 ]
 management_group = "lso-management-group"
