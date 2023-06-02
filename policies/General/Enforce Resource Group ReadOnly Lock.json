@@ -2,7 +2,7 @@
   "properties": {
       "displayName": "Deploy ReadOnly Resource Lock on Resource Groups",
       "description": "Creates a resource lock at the resource group level for preventing resources changing based on Tag values",
-      "mode": "all",
+      "mode": "All",
       "metadata": {
           "version": "1.0.0",
           "category": "General"
