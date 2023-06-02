@@ -40,7 +40,7 @@ policy_rules = [
     file_name        = "Inherit Tags from Resource Group"
     location         = "eastus"
     category         = "Tags"
-  }
+  },
   {
     name             = "enforce-readonly-lock"
     skip_remediation = false
