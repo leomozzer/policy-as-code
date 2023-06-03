@@ -54,7 +54,7 @@
                                       "name": "ReadOnly",
                                       "properties": {
                                           "level": "ReadOnly",
-                                          "notes": "Prevents deletion of resource group."
+                                          "notes": "Prevents modification of resource group."
                                       }
                                   }
                               ]
