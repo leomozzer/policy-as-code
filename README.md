@@ -36,7 +36,7 @@ A github action was also implemented to perform the CI/CD of the deployment.
   ├──📜outputs.tf
   └──📜variables.tf
 📂terraform-modules
-  └──📂module1
+  └──📂policy-subscription-file
       ├──📜main.tf
       ├──📜outputs.tf
       └──📜variables.tf
