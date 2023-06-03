@@ -19,3 +19,7 @@ Removed the following item due to a limitation in the template. Received errors 
 ## 05-05-2023
 
 Added the custom module [policy-as-code](https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/latest)
+
+## 06-02-2023
+
+- Added policy `Enforce Resource Group ReadOnly Lock`
