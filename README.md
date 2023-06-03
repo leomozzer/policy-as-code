@@ -21,11 +21,16 @@ A github action was also implemented to perform the CI/CD of the deployment.
       ├──📜terraform-deploy-old.yml
       └──📜terraform-deploy.yml
 📂policies
+  └──📂General
+      └──📜Enforce Resource Group ReadOnly Lock.json
   └──📂Monitoring
       ├──📜Centralized Log Analytics Workspace.json
       ├──📜Deny Creation New Log Analytics Workspaces.json
       ├──📜Diagnostic Settings Key Vaults.json
       └──📜Diagnostic Settings Storage Account.json
+  └──📂Tags
+      ├──📜Audit Resource Group Tags.json
+      └──📜Inherit Tags from Resource Group.json
 📂terraform-main
   ├──📜main.tf
   ├──📜outputs.tf

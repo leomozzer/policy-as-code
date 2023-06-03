@@ -2,7 +2,7 @@
 
 ## 04-05-2023
 
-Removed the following item due to a limitation in the template. Received errors like "The function 'resourceId' defined in policy is invalid" because when using the function resourceId can't be used when evaluating resources
+- Removed the following item due to a limitation in the template. Received errors like "The function 'resourceId' defined in policy is invalid" because when using the function resourceId can't be used when evaluating resources
 
 ```json
 {
@@ -18,7 +18,7 @@ Removed the following item due to a limitation in the template. Received errors 
 
 ## 05-05-2023
 
-Added the custom module [policy-as-code](https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/latest)
+- Added the custom module [policy-as-code](https://registry.terraform.io/modules/gettek/policy-as-code/azurerm/latest)
 
 ## 06-02-2023
 
