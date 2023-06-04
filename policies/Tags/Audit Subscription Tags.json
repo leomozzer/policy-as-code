@@ -1,0 +1,42 @@
+{
+    "properties": {
+      "displayName": "Audit required subscriptions tags",
+      "policyType": "Custom",
+      "mode": "All",
+      "description": "Check if the tags Environment, UseCase and MaintainedBy exists in the subscription tags",
+      "metadata": {
+        "version": "1.0.0",
+        "category": "Tags"
+      },
+      "parameters":{},
+      "policyRule": {
+        "if": {
+          "allOf":[
+            {
+              "field": "type",
+              "equals": "Microsoft.Resources/subscriptions"
+            },
+            {
+              "anyOf": [
+                {
+                  "field": "tags[Environment]",
+                  "exists": "false"
+                },
+                {
+                  "field": "tags[UseCase]",
+                  "exists": "false"
+                },
+                {
+                  "field": "tags[MaintainedBy]",
+                  "exists": "false"
+                }
+              ]
+            }
+          ]
+        },
+        "then": {
+          "effect": "audit"
+        }
+      }
+    }
+}

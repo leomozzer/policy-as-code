@@ -48,7 +48,7 @@ jobs:
       CONTAINER_NAME: "states"
       STATE_FILE: "policy-as-code.tfstate"
       STAGE: ${{ matrix.stage }}
-      TAGS: '"UseCase=Terraform" "Environment=${{ matrix.stage }}" "Deployed=GitHub Actions" Repository="https://github.com/leomozzer/policy-as-code" "RunNumber=${{ github.run_number }}"'
+      TAGS: '"UseCase=Terraform" "Environment=${{ matrix.stage }}" "Deployed=GitHub Actions" Repository="https://github.com/leomozzer/policy-as-code" "RunNumber=${{ github.run_number }}" "MaintainedBy=leomozzer"'
     secrets:
       AZURE_SP: ${{ secrets.AZURE_SP }}
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
