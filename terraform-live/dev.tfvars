@@ -54,6 +54,13 @@ policy_rules = [
     file_name        = "Audit Subscription Tags"
     location         = "eastus"
     category         = "Tags"
+  },
+  {
+    name             = "diagnostic-settings-azure-functions"
+    skip_remediation = false
+    file_name        = "Diagnostic Settings Azure Functions"
+    location         = "eastus"
+    category         = "Monitoring"
   }
 ]
 management_group = "lso-management-group"
