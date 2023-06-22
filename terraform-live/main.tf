@@ -55,3 +55,22 @@ module "subscription_definition_def_assignment" {
   assignment_scope = data.azurerm_management_group.management_group.id
   skip_remediation = each.value.skip_remediation
 }
+
+module configure_diagnostic_initiative {
+  source                  = "gettek/policy-as-code/azurerm//modules/initiative"
+  version = "2.8.0"
+  initiative_name         = "configure_diagnostic_initiative"
+  initiative_display_name = "[Monitoring]: Configure Diagnostice Settings"
+  initiative_description  = "Deploys and configures Diagnostice Settings"
+  initiative_category     = "Monitoring"
+  management_group_id     = data.azurerm_management_group.management_group.id
+  merge_effects           = false
+
+  for_each = {
+    for index, definition in var.policy_definitions : definition.name => definition if definition.type == "initiative"
+  }
+
+  member_definitions = [
+    module.subscription_definition[each.value.name].definition
+  ]
+}
