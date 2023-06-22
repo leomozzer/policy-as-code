@@ -60,24 +60,19 @@ module "subscription_definition_def_assignment" {
 
 # locals {
 #   initiative_list = flatten([
-#     for index, initiative in var.initiative_definitions : [
-#       for definition in initiative.definitions : {
-#         "${initiative.initiative_name}" = {
-#           name             = definition["name"]
-#           skip_remediation = definition["skip_remediation"]
-#           file_name        = definition["file_name"]
-#           location         = definition["location"]
-#           category         = definition["category"]
-#           type             = definition["type"]
-#         }
-#       }
-#     ]
+#     for index, definition in var.policy_definitions : [
+#       for definition in initiative.definitions : [
+#         for item in module.subscription_definition[definition] : [
+#           item.definition
+#         ]
+#       ]
+#     ] if definition.type == "initiative"
 #   ])
 # }
 
-# output "initiative_list" {
-#   value = local.initiative_list
-# }
+output "initiative_list" {
+  value = local.initiative_list
+}
 
 # module "definition_initiatives" {
 #   source  = "gettek/policy-as-code/azurerm//modules/definition"
@@ -108,24 +103,21 @@ module "subscription_definition_def_assignment" {
 #   policy_metadata     = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.metadata
 # }
 
-# module "configure_diagnostic_initiative" {
-#   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-#   version                 = "2.8.0"
-#   for_each = {
-#     for index, definition in var.policy_definitions : definition.name => definition if definition.type == "policy"
-#   }
-#   initiative_name         = "configure_diagnostic_initiative"
-#   initiative_display_name = "[Monitoring]: Configure Diagnostice Settings"
-#   initiative_description  = "Deploys and configures Diagnostice Settings"
-#   initiative_category     = "Monitoring"
-#   management_group_id     = data.azurerm_management_group.management_group.id
-#   merge_effects           = false
+module "configure_diagnostic_initiative" {
+  source                  = "gettek/policy-as-code/azurerm//modules/initiative"
+  version                 = "2.8.0"
+  for_each = {
+    for index, definition in var.policy_definitions : definition.name => definition if definition.type == "initiative"
+  }
+  initiative_name         = each.value.initiative_name
+  initiative_display_name = "${each.value.initiative_category}: ${initiative_display_name}"
+  initiative_description  = each.value.initiative_description
+  initiative_category     = each.value.initiative_category
+  management_group_id     = data.azurerm_management_group.management_group.id
+  merge_effects           = each.value.merge_effects
 
-#   for_each = {
-#     for index, definition in var.policy_definitions : definition.name => definition if definition.type == "initiative"
-#   }
-
-#   member_definitions = [
-#     module.subscription_definition[each.value.name].definition
-#   ]
-# }
+  member_definitions = [
+    for policy in module.subscription_definition :
+    policy.definition if each.value.type == "initiative"
+  ]
+}
