@@ -52,7 +52,7 @@ policy_definitions = [
 initiative_definitions = [
   {
     initiative_name         = "configure_diagnostic_initiative"
-    initiative_display_name = "Configure Diagnostice Settings",
+    initiative_display_name = "Configure Diagnostic Settings",
     initiative_category     = "Monitoring",
     initiative_description  = "Deploys and configures Diagnostice Settings"
     merge_effects           = false
