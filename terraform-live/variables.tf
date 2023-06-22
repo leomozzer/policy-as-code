@@ -1,4 +1,4 @@
-variable "policy_rules" {
+variable "policy_definitions" {
   type = any
 }
 variable "management_group" {

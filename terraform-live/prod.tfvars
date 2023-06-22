@@ -1,4 +1,4 @@
-policy_rules = [
+policy_definitions = [
   {
     name             = "centralized-law"
     skip_remediation = false
