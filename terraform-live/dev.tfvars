@@ -46,6 +46,30 @@ policy_definitions = [
     location         = "eastus"
     category         = "Tags"
     type             = "policy"
+  },
+  {
+    name             = "diagnostic-settings-storage-accounts"
+    skip_remediation = false
+    file_name        = "Diagnostic Settings Storage Account"
+    location         = "eastus"
+    category         = "Monitoring"
+    type             = "initiative"
+  },
+  {
+    name             = "diagnostic-settings-key-vaults"
+    skip_remediation = false
+    file_name        = "Diagnostic Settings Key Vaults"
+    location         = "eastus"
+    category         = "Monitoring"
+    type             = "initiative"
+  },
+  {
+    name             = "diagnostic-settings-azure-functions"
+    skip_remediation = false
+    file_name        = "Diagnostic Settings Azure Functions"
+    location         = "eastus"
+    category         = "Monitoring"
+    type             = "initiative"
   }
 ]
 
@@ -56,32 +80,7 @@ initiative_definitions = [
     initiative_category     = "Monitoring",
     initiative_description  = "Deploys and configures Diagnostice Settings"
     merge_effects           = false
-    definitions = [
-      {
-        name             = "diagnostic-settings-storage-accounts"
-        skip_remediation = false
-        file_name        = "Diagnostic Settings Storage Account"
-        location         = "eastus"
-        category         = "Monitoring"
-        type             = "initiative"
-      },
-      {
-        name             = "diagnostic-settings-key-vaults"
-        skip_remediation = false
-        file_name        = "Diagnostic Settings Key Vaults"
-        location         = "eastus"
-        category         = "Monitoring"
-        type             = "initiative"
-      },
-      {
-        name             = "diagnostic-settings-azure-functions"
-        skip_remediation = false
-        file_name        = "Diagnostic Settings Azure Functions"
-        location         = "eastus"
-        category         = "Monitoring"
-        type             = "initiative"
-      }
-    ]
+    definitions             = ["diagnostic-settings-storage-accounts", "diagnostic-settings-key-vaults", "diagnostic-settings-azure-functions"]
   }
 ]
 management_group = "lso-management-group"
