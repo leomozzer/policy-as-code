@@ -76,7 +76,7 @@ locals {
 }
 
 output "initiative_list" {
-  value = initiative_list
+  value = local.initiative_list
 }
 
 # module "definition_initiatives" {
