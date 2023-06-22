@@ -70,9 +70,9 @@ module "subscription_definition_def_assignment" {
 #   ])
 # }
 
-output "initiative_list" {
-  value = local.initiative_list
-}
+# output "initiative_list" {
+#   value = local.initiative_list
+# }
 
 # module "definition_initiatives" {
 #   source  = "gettek/policy-as-code/azurerm//modules/definition"
@@ -103,21 +103,21 @@ output "initiative_list" {
 #   policy_metadata     = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.metadata
 # }
 
-module "configure_diagnostic_initiative" {
-  source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-  version                 = "2.8.0"
-  for_each = {
-    for index, definition in var.policy_definitions : definition.name => definition if definition.type == "initiative"
-  }
-  initiative_name         = each.value.initiative_name
-  initiative_display_name = "${each.value.initiative_category}: ${initiative_display_name}"
-  initiative_description  = each.value.initiative_description
-  initiative_category     = each.value.initiative_category
-  management_group_id     = data.azurerm_management_group.management_group.id
-  merge_effects           = each.value.merge_effects
+# module "configure_diagnostic_initiative" {
+#   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
+#   version                 = "2.8.0"
+#   for_each = {
+#     for index, definition in var.policy_definitions : definition.name => definition if definition.type == "initiative"
+#   }
+#   initiative_name         = each.value.initiative_name
+#   initiative_display_name = "${each.value.initiative_category}: ${initiative_display_name}"
+#   initiative_description  = each.value.initiative_description
+#   initiative_category     = each.value.initiative_category
+#   management_group_id     = data.azurerm_management_group.management_group.id
+#   merge_effects           = each.value.merge_effects
 
-  member_definitions = [
-    for policy in module.subscription_definition :
-    policy.definition if each.value.type == "initiative"
-  ]
-}
+#   member_definitions = [
+#     for policy in module.subscription_definition :
+#     policy.definition if each.value.type == "initiative"
+#   ]
+# }
