@@ -49,8 +49,7 @@ module "subscription_definition_def_assignment" {
   source  = "gettek/policy-as-code/azurerm//modules/def_assignment"
   version = "2.8.0"
   for_each = {
-    for index, definition in var.policy_definitions : definition.name => definition
-    if contains(definition.type, "policy")
+    for index, definition in var.policy_definitions : definition.name => definition if definition.type == "policy"
   }
   definition       = module.subscription_definition[each.value.name].definition
   assignment_scope = data.azurerm_management_group.management_group.id
