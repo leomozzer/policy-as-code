@@ -56,21 +56,40 @@ module "subscription_definition_def_assignment" {
   skip_remediation = each.value.skip_remediation
 }
 
-module configure_diagnostic_initiative {
-  source                  = "gettek/policy-as-code/azurerm//modules/initiative"
+### Create Initiatives
+
+module "definition_initiatives" {
+  source  = "gettek/policy-as-code/azurerm//modules/definition"
   version = "2.8.0"
-  initiative_name         = "configure_diagnostic_initiative"
-  initiative_display_name = "[Monitoring]: Configure Diagnostice Settings"
-  initiative_description  = "Deploys and configures Diagnostice Settings"
-  initiative_category     = "Monitoring"
-  management_group_id     = data.azurerm_management_group.management_group.id
-  merge_effects           = false
-
   for_each = {
-    for index, definition in var.policy_definitions : definition.name => definition if definition.type == "initiative"
+    for index, definition in var.initiative_definitions.definitions : definition.name => definition
   }
-
-  member_definitions = [
-    module.subscription_definition[each.value.name].definition
-  ]
+  policy_name         = each.value.file_name
+  display_name        = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.displayName
+  policy_description  = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.description
+  policy_category     = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.metadata.category
+  policy_version      = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.metadata.version
+  management_group_id = data.azurerm_management_group.management_group.id
+  policy_rule         = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.policyRule
+  policy_parameters   = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.parameters
+  policy_metadata     = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.metadata
 }
+
+# module "configure_diagnostic_initiative" {
+#   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
+#   version                 = "2.8.0"
+#   initiative_name         = "configure_diagnostic_initiative"
+#   initiative_display_name = "[Monitoring]: Configure Diagnostice Settings"
+#   initiative_description  = "Deploys and configures Diagnostice Settings"
+#   initiative_category     = "Monitoring"
+#   management_group_id     = data.azurerm_management_group.management_group.id
+#   merge_effects           = false
+
+#   for_each = {
+#     for index, definition in var.policy_definitions : definition.name => definition if definition.type == "initiative"
+#   }
+
+#   member_definitions = [
+#     module.subscription_definition[each.value.name].definition
+#   ]
+# }

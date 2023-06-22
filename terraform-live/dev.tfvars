@@ -8,22 +8,6 @@ policy_definitions = [
     type             = "policy"
   },
   {
-    name             = "diagnostic-settings-storage-accounts"
-    skip_remediation = false
-    file_name        = "Diagnostic Settings Storage Account"
-    location         = "eastus"
-    category         = "Monitoring"
-    type             = "initiative"
-  },
-  {
-    name             = "diagnostic-settings-key-vaults"
-    skip_remediation = false
-    file_name        = "Diagnostic Settings Key Vaults"
-    location         = "eastus"
-    category         = "Monitoring"
-    type             = "initiative"
-  },
-  {
     name             = "deny-new-laws"
     skip_remediation = false
     file_name        = "Deny Creation New Log Analytics Workspace"
@@ -62,14 +46,42 @@ policy_definitions = [
     location         = "eastus"
     category         = "Tags"
     type             = "policy"
-  },
+  }
+]
+
+initiative_definitions = [
   {
-    name             = "diagnostic-settings-azure-functions"
-    skip_remediation = false
-    file_name        = "Diagnostic Settings Azure Functions"
-    location         = "eastus"
-    category         = "Monitoring"
-    type             = "initiative"
+    initiative_name         = "configure_diagnostic_initiative"
+    initiative_display_name = "Configure Diagnostice Settings",
+    initiative_category     = "Monitoring",
+    initiative_description  = "Deploys and configures Diagnostice Settings"
+    merge_effects           = false
+    definitions = [
+      {
+        name             = "diagnostic-settings-storage-accounts"
+        skip_remediation = false
+        file_name        = "Diagnostic Settings Storage Account"
+        location         = "eastus"
+        category         = "Monitoring"
+        type             = "initiative"
+      },
+      {
+        name             = "diagnostic-settings-key-vaults"
+        skip_remediation = false
+        file_name        = "Diagnostic Settings Key Vaults"
+        location         = "eastus"
+        category         = "Monitoring"
+        type             = "initiative"
+      },
+      {
+        name             = "diagnostic-settings-azure-functions"
+        skip_remediation = false
+        file_name        = "Diagnostic Settings Azure Functions"
+        location         = "eastus"
+        category         = "Monitoring"
+        type             = "initiative"
+      }
+    ]
   }
 ]
 management_group = "lso-management-group"
