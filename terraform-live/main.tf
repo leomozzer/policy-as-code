@@ -32,7 +32,7 @@ module "subscription_definition" {
   source  = "gettek/policy-as-code/azurerm//modules/definition"
   version = "2.8.0"
   for_each = {
-    for index, definition in var.policy_definitions : definition.name => definition
+    for index, definition in var.policy_definitions : definition.name => definition if definition.type == "policy"
   }
   policy_name         = each.value.file_name
   display_name        = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.displayName
