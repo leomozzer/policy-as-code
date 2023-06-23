@@ -81,6 +81,10 @@ initiative_definitions = [
     initiative_description  = "Deploys and configures Diagnostice Settings"
     merge_effects           = false
     definitions             = ["diagnostic-settings-storage-accounts", "diagnostic-settings-key-vaults", "diagnostic-settings-azure-functions"]
+    assignment_effect       = "DeployIfNotExists"
+    skip_role_assignment    = false
+    skip_remediation        = false
+    re_evaluate_compliance  = true
   }
 ]
 management_group = "lso-management-group"
