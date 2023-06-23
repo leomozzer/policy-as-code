@@ -58,15 +58,56 @@ module "subscription_definition_def_assignment" {
 
 ### Create Initiatives
 
+locals {
+  initiative_list = flatten([
+    # for index, definition in var.policy_definitions : {
+    #   "name" = definition.name
+    #   "definition" = "module.subscription_definition[definition.name].definition"
+    # } if definition.type == "initiative"
+
+    for index, initiative in var.initiative_definitions: {
+      "initiative": {
+        "definitions": [ for definition in var.policy_definitions : module.subscription_definition[definition.name].definition if contains(initiative.definitions, definition.name) == true]
+        "initiative_name": initiative.initiative_name
+        "initiative_display_name": initiative.initiative_display_name
+        "initiative_category": initiative.initiative_category
+        "initiative_description": initiative.initiative_description
+      }
+    }
+
+    # for initiative in var.initiative_definitions : {
+    #   "${initiative.initiative_name}": {
+    #     "initiative_name" = initiative.initiative_name
+    #     "initiative_display_name" = initiative.initiative_display_name
+    #     "initiative_category" = initiative.initiative_category
+    #     "initiative_description" = initiative.initiative_description
+    #     "definitions" = initiative.definitions
+    #   }
+    # }
+    # for index, definition in var.policy_definitions : [
+    #   for initiative in var.initiative_definitions : {
+    #     "something": {
+    #       "bla" = "${initiative.definitions}"
+    #     }
+    #   }
+    #   # [
+    #   #   # for item in module.subscription_definition[definition] : [
+    #   #   #   item.definition
+    #   #   # ]
+    #   # ]
+    # ] if definition.type == "initiative"
+  ])
+}
+
 # locals {
 #   initiative_list = flatten([
-#     for index, definition in var.policy_definitions : [
-#       for definition in initiative.definitions : [
-#         for item in module.subscription_definition[definition] : [
-#           item.definition
-#         ]
-#       ]
-#     ] if definition.type == "initiative"
+#     for index, initiative in var.initiative_definitions: [
+#       for value in local.definitions_list: {
+#        "index": index
+#        "initiative": initiative
+#        "value": value
+#       }
+#     ]
 #   ])
 # }
 
@@ -103,21 +144,17 @@ module "subscription_definition_def_assignment" {
 #   policy_metadata     = (jsondecode(file("../policies/${each.value.category}/${each.value.file_name}.json"))).properties.metadata
 # }
 
-# module "configure_diagnostic_initiative" {
-#   source                  = "gettek/policy-as-code/azurerm//modules/initiative"
-#   version                 = "2.8.0"
-#   for_each = {
-#     for index, definition in var.policy_definitions : definition.name => definition if definition.type == "initiative"
-#   }
-#   initiative_name         = each.value.initiative_name
-#   initiative_display_name = "${each.value.initiative_category}: ${initiative_display_name}"
-#   initiative_description  = each.value.initiative_description
-#   initiative_category     = each.value.initiative_category
-#   management_group_id     = data.azurerm_management_group.management_group.id
-#   merge_effects           = each.value.merge_effects
+module "configure_initiative" {
+  source                  = "gettek/policy-as-code/azurerm//modules/initiative"
+  version                 = "2.8.0"
+  for_each = {
+    for key, initiative in local.initiative_list : key => initiative
+  }
+  initiative_name         = each.value["initiative"]["initiative_name"]
+  initiative_display_name = "${each.value["initiative"]["initiative_category"]}: ${each.value["initiative"]["initiative_display_name"]}"
+  initiative_description  = each.value["initiative"]["initiative_description"]
+  initiative_category     = each.value["initiative"]["initiative_category"]
+  management_group_id     = data.azurerm_management_group.management_group.id
 
-#   member_definitions = [
-#     for policy in module.subscription_definition :
-#     policy.definition if each.value.type == "initiative"
-#   ]
-# }
+  member_definitions = each.value["initiative"]["definitions"]
+}
