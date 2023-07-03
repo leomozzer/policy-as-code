@@ -57,6 +57,7 @@ module "subscription_definition_def_assignment" {
 }
 
 ### Create Initiatives
+### Use the following piece only if it's required to have a initiative
 
 locals {
   initiative_list = flatten([

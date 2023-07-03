@@ -26,10 +26,12 @@ A github action was also implemented to perform the CI/CD of the deployment.
   └──📂Monitoring
       ├──📜Centralized Log Analytics Workspace.json
       ├──📜Deny Creation New Log Analytics Workspaces.json
+      ├──📜Diagnostic Settings Azure Functions.json
       ├──📜Diagnostic Settings Key Vaults.json
       └──📜Diagnostic Settings Storage Account.json
   └──📂Tags
       ├──📜Audit Resource Group Tags.json
+      ├──📜Audit Subscription Tags.json
       └──📜Inherit Tags from Resource Group.json
 📂terraform-main
   ├──📜main.tf
@@ -66,16 +68,57 @@ A github action was also implemented to perform the CI/CD of the deployment.
 ### Variables
 
 ```terraform
-policy_rules = [
+policy_definitions = [
   {
     name             = "centralized-law" #short name of the policy name
     skip_remediation = false #manage the remediation task
     file_name        = "Centralized Log Analytics Workspace" #Name of the file
     location         = "eastus" #location where will be deployed
     category         = "Monitoring" #Folder where the policy file is located
+    type             = "policy"
+  },
+  {
+    name             = "diagnostic-settings-storage-accounts"
+    skip_remediation = false
+    file_name        = "Diagnostic Settings Storage Account"
+    location         = "eastus"
+    category         = "Monitoring"
+    type             = "initiative"
+  },
+  {
+    name             = "diagnostic-settings-key-vaults"
+    skip_remediation = false
+    file_name        = "Diagnostic Settings Key Vaults"
+    location         = "eastus"
+    category         = "Monitoring"
+    type             = "initiative"
+  },
+  {
+    name             = "diagnostic-settings-azure-functions"
+    skip_remediation = false
+    file_name        = "Diagnostic Settings Azure Functions"
+    location         = "eastus"
+    category         = "Monitoring"
+    type             = "initiative"
   }
 ]
 management_group = "management-group" #Add management group name
+
+#If you need to have an initiative populate the following variable
+initiative_definitions = [
+  {
+    initiative_name         = "configure_diagnostic_initiative"
+    initiative_display_name = "Configure Diagnostic Settings",
+    initiative_category     = "Monitoring",
+    initiative_description  = "Deploys and configures Diagnostice Settings"
+    merge_effects           = false
+    definitions             = ["diagnostic-settings-storage-accounts", "diagnostic-settings-key-vaults", "diagnostic-settings-azure-functions"] #List of policy definitions
+    assignment_effect       = "DeployIfNotExists"
+    skip_role_assignment    = false
+    skip_remediation        = false
+    re_evaluate_compliance  = true
+  }
+]
 ```
 
 ### Plan & Apply
