@@ -23,3 +23,8 @@
 ## 06-02-2023
 
 - Added policy `Enforce Resource Group ReadOnly Lock`
+
+## 07-03-2023
+
+- Added Initiative module
+- Logic to handle with a list of initiatives
