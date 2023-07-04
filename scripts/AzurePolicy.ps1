@@ -123,7 +123,7 @@ $initiativeDefinitions = @(
 foreach($policy in $policyDefinitions){
     Write-Output $policy.name
     Write-Output $policy.category
-    $filePath = "../policies/definition/$($policy.category)/$($policy.file_name).json"
+    $filePath = "../policies/$($policy.category)/$($policy.file_name).json"
     Write-Output $filePath
     #CreateDefinition -policyName $policy.file_name -policyFile $filePath
     # if($policy.type -eq "policy"){
@@ -151,7 +151,7 @@ if($initiativeDefinitions.Length -gt 0){
             -PolicyDefinition $initiativePolicyFile `
             -Description "$($initiative.initiative_description)" `
             -Metadata '{"category":"<<category>>"}'.Replace('<<category>>', $initiative.initiative_category) `
-            -Parameter "../policies/initiative/$($initiative.initiative_display_name)/parameters.json"
+            -Parameter "../initiatives/$($initiative.initiative_display_name)/parameters.json"
         #Write-Output $initiative
         #CreateAssignment -type "initiative" -policyName $policy.file_name -location $policyLocation
     }
