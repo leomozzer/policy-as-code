@@ -37,5 +37,5 @@ jobs:
     - name: Run Azure PowerShell script
       uses: azure/powershell@v1
       with:
-        inlineScript: ./scripts/AzurePolicy.ps1 -scopeType "subscriptions" -scope ${{ secrets.ARM_SUBSCRIPTION_ID }}
+        inlineScript: ./scripts/AzurePolicy.ps1 -scopeType "subscriptions" -scope "/subscriptions/${{ secrets.ARM_SUBSCRIPTION_ID }}"
         azPSVersion: "latest"
