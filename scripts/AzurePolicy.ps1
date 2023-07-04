@@ -121,18 +121,14 @@ $initiativeDefinitions = @(
 )
 
 foreach($policy in $policyDefinitions){
-    Write-Output $policy.name
-    Write-Output $policy.category
     $filePath = "../policies/$($policy.category)/$($policy.file_name).json"
-    Write-Output $filePath
-    #CreateDefinition -policyName $policy.file_name -policyFile $filePath
-    # if($policy.type -eq "policy"){
-    #     CreateAssignment -type $policy.type -policyName $policy.file_name -location $policy.location
-    # }
+    CreateDefinition -policyName $policy.file_name -policyFile $filePath
+    if($policy.type -eq "policy"){
+        CreateAssignment -type $policy.type -policyName $policy.file_name -location $policy.location
+    }
 }
 if($initiativeDefinitions.Length -gt 0){
     foreach($initiative in $initiativeDefinitions){
-        Write-Output $initiative
         $initiativePolicies = @()
         foreach($definition in $policyDefinitions){
             if($initiative.definitions -contains $definition.name){
@@ -141,18 +137,13 @@ if($initiativeDefinitions.Length -gt 0){
                 }
             }
         }
-        Write-Output $initiativePolicies
         $initiativePolicyFile = "../tmp/$($initiative.initiative_name).json"
         $initiativePolicies | ConvertTo-Json -depth 100 | Out-File $initiativePolicyFile
-        # $initiativeMetadata = [pscustomobject]@{
-        #     "category" = $initiative.initiative_category
-        # }
         New-AzPolicySetDefinition -Name "$($initiative.initiative_display_name)" `
             -PolicyDefinition $initiativePolicyFile `
             -Description "$($initiative.initiative_description)" `
             -Metadata '{"category":"<<category>>"}'.Replace('<<category>>', $initiative.initiative_category) `
             -Parameter "../initiatives/$($initiative.initiative_display_name)/parameters.json"
-        #Write-Output $initiative
         #CreateAssignment -type "initiative" -policyName $policy.file_name -location $policyLocation
         Remove-Item -Path $initiativePolicyFile
     }
