@@ -142,14 +142,22 @@ if($initiativeDefinitions.Length -gt 0){
                 }
             }
         }
+
         $initiativePolicyFile = "./tmp/$($initiative.initiative_name).json"
         $initiativePolicies | ConvertTo-Json -depth 100 | Out-File $initiativePolicyFile
         New-AzPolicySetDefinition -Name "$($initiative.initiative_display_name)" `
             -PolicyDefinition $initiativePolicyFile `
             -Description "$($initiative.initiative_description)" `
             -Metadata '{"category":"<<category>>"}'.Replace('<<category>>', $initiative.initiative_category) `
+
+        #Adding this part because of the issue 'UnusedPolicyParameters : The policy set 'Configure Diagnostic Settings' has defined parameters'
+        New-AzPolicySetDefinition -Name "$($initiative.initiative_display_name)" `
+            -PolicyDefinition $initiativePolicyFile `
+            -Description "$($initiative.initiative_description)" `
+            -Metadata '{"category":"<<category>>"}'.Replace('<<category>>', $initiative.initiative_category) `
             -Parameter "./initiatives/$($initiative.initiative_display_name)/parameters.json"
         #CreateAssignment -type "initiative" -policyName $policy.file_name -location $policyLocation
+
         Remove-Item -Path $initiativePolicyFile
     }
 }
