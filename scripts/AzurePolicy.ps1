@@ -126,7 +126,7 @@ $initiativeDefinitions = @(
 )
 
 foreach($policy in $policyDefinitions){
-    $filePath = "../policies/$($policy.category)/$($policy.file_name).json"
+    $filePath = "./policies/$($policy.category)/$($policy.file_name).json"
     CreateDefinition -policyName $policy.file_name -policyFile $filePath
     if($policy.type -eq "policy"){
         CreateAssignment -type $policy.type -policyName $policy.file_name -location $policy.location
@@ -142,13 +142,13 @@ if($initiativeDefinitions.Length -gt 0){
                 }
             }
         }
-        $initiativePolicyFile = "../tmp/$($initiative.initiative_name).json"
+        $initiativePolicyFile = "./tmp/$($initiative.initiative_name).json"
         $initiativePolicies | ConvertTo-Json -depth 100 | Out-File $initiativePolicyFile
         New-AzPolicySetDefinition -Name "$($initiative.initiative_display_name)" `
             -PolicyDefinition $initiativePolicyFile `
             -Description "$($initiative.initiative_description)" `
             -Metadata '{"category":"<<category>>"}'.Replace('<<category>>', $initiative.initiative_category) `
-            -Parameter "../initiatives/$($initiative.initiative_display_name)/parameters.json"
+            -Parameter "./initiatives/$($initiative.initiative_display_name)/parameters.json"
         #CreateAssignment -type "initiative" -policyName $policy.file_name -location $policyLocation
         Remove-Item -Path $initiativePolicyFile
     }
