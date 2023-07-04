@@ -8,7 +8,7 @@ on:
       - 'terraform-live/**'
       - 'terraform-modules/**'
       - 'policies/**'
-      - '.github/workflows/**'
+      - '.github/workflows/terraform-deploy.yml'
   workflow_dispatch:
   pull_request:
 
