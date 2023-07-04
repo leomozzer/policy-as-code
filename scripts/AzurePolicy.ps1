@@ -154,5 +154,6 @@ if($initiativeDefinitions.Length -gt 0){
             -Parameter "../initiatives/$($initiative.initiative_display_name)/parameters.json"
         #Write-Output $initiative
         #CreateAssignment -type "initiative" -policyName $policy.file_name -location $policyLocation
+        Remove-Item -Path $initiativePolicyFile
     }
 }
