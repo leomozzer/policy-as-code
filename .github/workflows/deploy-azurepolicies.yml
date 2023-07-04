@@ -25,6 +25,7 @@ jobs:
 
     - run: |
         mkdir tmp
+        ls -ltr
       shell: bash
 
     - name: Login via Az module
