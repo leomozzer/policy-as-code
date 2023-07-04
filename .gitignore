@@ -42,4 +42,4 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-tmp
+tmp/**
