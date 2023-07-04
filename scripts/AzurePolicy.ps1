@@ -40,7 +40,8 @@ function CreateDefinition {
         }
     }
     catch {
-        Write-Output "Something went wrong"
+        Write-Output "Something went wrong in CreateDefinition"
+        Write-Output $_
     }
 }
 
@@ -79,7 +80,8 @@ function CreateAssignment{
         }
     }
     catch {
-        Write-Output "Something went wrong"
+        Write-Output "Something went wrong in CreateAssignment"
+        Write-Output $_
     }
 }
 
