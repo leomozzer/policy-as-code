@@ -18,8 +18,12 @@ A github action was also implemented to perform the CI/CD of the deployment.
       └──📂terraform-plan
           └──📜action.yaml
   └──📂workflows
+      ├──📜deploy-azurepolicies.yml
       ├──📜terraform-deploy-old.yml
       └──📜terraform-deploy.yml
+📂initiatives
+  └──📂Configure Diagnostic Settings
+      └──📜parameters.json
 📂policies
   └──📂General
       └──📜Enforce Resource Group ReadOnly Lock.json
@@ -33,6 +37,8 @@ A github action was also implemented to perform the CI/CD of the deployment.
       ├──📜Audit Resource Group Tags.json
       ├──📜Audit Subscription Tags.json
       └──📜Inherit Tags from Resource Group.json
+📂scripts
+  └──📜AzurePolicy.ps1
 📂terraform-main
   ├──📜main.tf
   ├──📜outputs.tf
@@ -137,3 +143,15 @@ Add the variables in Github repository settings
 - ARM_TENANT_ID
 - AZURE_SP
 - INFRACOST_API_KEY
+
+## PowerShell Script
+
+Created a PowerShell script to use the Azure cmdlt interactives to create Policy definitions and initiatives, then assign to create remediation tasks
+
+```powershell
+#Example to create the policies in a management group
+./scripts/AzurePolicy.ps1 -scopeType "management-group" -scope "management-group-name"
+
+#Example to create the policies under a specific subscription
+./scripts/AzurePolicy.ps1 -scopeType "subscriptions" -scope "/subscriptions/d5cb4be2-70b7-47bc-9ddf-6e35f76c3d84"
+```
