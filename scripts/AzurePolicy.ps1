@@ -32,10 +32,10 @@ function CreateDefinition {
                 -Policy $policyFile `
                 -ManagementGroupName $scope
             }
-            "subscriptions" { 
+            "subscriptions" {
                 New-AzPolicyDefinition -Name $policyName `
                 -Policy $policyFile `
-                -SubscriptionId $scope
+                -SubscriptionId $scope.Split("/")[2]
             }
             Default {
                 Write-Output "Cant run CreateDefinition to $policyName"
@@ -68,14 +68,18 @@ function CreateAssignment{
                 $policyDefinition = Get-AzPolicyDefinition -Name $policyName
                 New-AzPolicyAssignment -Name $policyName `
                     -PolicyDefinition $policyDefinition `
-                    -Scope "/subscriptions/$scope" `
+                    -Scope $scope `
                     -IdentityType 'SystemAssigned' `
                     -Location $location
             }
             "initiative" { 
-                New-AzPolicyDefinition -Name $policyName `
-                -Policy $policyFile `
-                -SubscriptionId $scope
+                $initiativeDefinition = Get-AzPolicySetDefinition -Name $policyName
+                Write-Output $policyDefinition
+                New-AzPolicyAssignment -Name $policyName `
+                    -PolicySetDefinition $initiativeDefinition `
+                    -Scope $scope `
+                    -IdentityType 'SystemAssigned' `
+                    -Location $location
             }
             Default {
                 Write-Output "Cant run CreateAssignment to $policyName"
@@ -122,6 +126,7 @@ $initiativeDefinitions = @(
         initiative_description  = "Deploys and configures Diagnostice Settings"
         definitions             = @("diagnostic-settings-key-vaults", "diagnostic-settings-azure-functions")
         assignment_effect       = "DeployIfNotExists"
+        location                = "eastus"
     }
 )
 
@@ -145,10 +150,13 @@ if($initiativeDefinitions.Length -gt 0){
 
         $initiativePolicyFile = "./tmp/$($initiative.initiative_name).json"
         $initiativePolicies | ConvertTo-Json -depth 100 | Out-File $initiativePolicyFile
-        New-AzPolicySetDefinition -Name "$($initiative.initiative_display_name)" `
-            -PolicyDefinition $initiativePolicyFile `
-            -Description "$($initiative.initiative_description)" `
-            -Metadata '{"category":"<<category>>"}'.Replace('<<category>>', $initiative.initiative_category) `
+        $validateIFPolicyExists = Get-AzPolicySetDefinition -Name $initiative.initiative_display_name
+        if(!$validateIFPolicyExists){
+            New-AzPolicySetDefinition -Name "$($initiative.initiative_display_name)" `
+                -PolicyDefinition $initiativePolicyFile `
+                -Description "$($initiative.initiative_description)" `
+                -Metadata '{"category":"<<category>>"}'.Replace('<<category>>', $initiative.initiative_category)
+        }
 
         #Adding this part because of the issue 'UnusedPolicyParameters : The policy set 'Configure Diagnostic Settings' has defined parameters'
         New-AzPolicySetDefinition -Name "$($initiative.initiative_display_name)" `
@@ -156,7 +164,8 @@ if($initiativeDefinitions.Length -gt 0){
             -Description "$($initiative.initiative_description)" `
             -Metadata '{"category":"<<category>>"}'.Replace('<<category>>', $initiative.initiative_category) `
             -Parameter "./initiatives/$($initiative.initiative_display_name)/parameters.json"
-        #CreateAssignment -type "initiative" -policyName $policy.file_name -location $policyLocation
+
+        CreateAssignment -type "initiative" -policyName $initiative.initiative_display_name -location $initiative.location
 
         Remove-Item -Path $initiativePolicyFile
     }
