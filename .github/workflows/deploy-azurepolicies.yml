@@ -39,3 +39,4 @@ jobs:
       with:
         inlineScript: ./scripts/AzurePolicy.ps1 -scopeType "subscriptions" -scope "/subscriptions/${{ secrets.ARM_SUBSCRIPTION_ID }}"
         azPSVersion: "latest"
+        errorActionPreference: continue
