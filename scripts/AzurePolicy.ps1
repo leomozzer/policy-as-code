@@ -23,9 +23,6 @@ function CreateDefinition {
         $policyFile
     )
     try {
-        Write-Output $policyName
-        Write-Output $policyFile
-        Write-Output $scope
         switch ($scopeType) {
             "management-group" { 
                 New-AzPolicyDefinition -Name $policyName `
