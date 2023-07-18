@@ -2,7 +2,7 @@ variable "policy_definitions" {
   type = any
 }
 variable "initiative_definitions" {
-  type = any
+  type    = any
   default = []
 }
 variable "management_group" {

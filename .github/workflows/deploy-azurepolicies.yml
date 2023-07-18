@@ -1,14 +1,14 @@
-name: 'Deploy Azure Policies'
+name: "[DEV]Deploy Azure Policies"
 on:
   push:
     branches:
-      - main
+      - dev
     paths:
-      - 'policies/**'
-      - '.github/workflows/deploy-azurepolicies.yml'
-      - 'scripts/AzurePolicy.ps1'
+      - "initiatives/**"
+      - "policies/**"
+      - ".github/workflows/deploy-azurepolicies.yml"
+      - "scripts/AzurePolicy.ps1"
   workflow_dispatch:
-  pull_request:
 
 env:
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
@@ -20,22 +20,22 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Check Out
-      uses: actions/checkout@v3
+      - name: Check Out
+        uses: actions/checkout@v3
 
-    - run: |
-        mkdir tmp
-      shell: bash
+      - run: |
+          mkdir tmp
+        shell: bash
 
-    - name: Login via Az module
-      uses: azure/login@v1
-      with:
-        creds: ${{secrets.AZURE_SP}}
-        enable-AzPSSession: true 
+      - name: Login via Az module
+        uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_SP}}
+          enable-AzPSSession: true
 
-    - name: Run Azure PowerShell script
-      uses: azure/powershell@v1
-      with:
-        inlineScript: ./scripts/AzurePolicy.ps1 -scopeType "subscriptions" -scope "/subscriptions/${{ secrets.ARM_SUBSCRIPTION_ID }}"
-        azPSVersion: "latest"
-        errorActionPreference: continue
+      - name: Run Azure PowerShell script
+        uses: azure/powershell@v1
+        with:
+          inlineScript: ./scripts/AzurePolicy.ps1 -scopeType "subscriptions" -scope "/subscriptions/${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          azPSVersion: "latest"
+          errorActionPreference: continue
