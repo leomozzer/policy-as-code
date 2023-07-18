@@ -1,8 +1,8 @@
-name: "Deploy Azure Policies"
+name: "[DEV]Deploy Azure Policies"
 on:
   push:
     branches:
-      - main
+      - dev
     paths:
       - "initiatives/**"
       - "policies/**"
