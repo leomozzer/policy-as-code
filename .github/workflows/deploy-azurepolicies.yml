@@ -9,7 +9,6 @@ on:
       - ".github/workflows/deploy-azurepolicies.yml"
       - "scripts/AzurePolicy.ps1"
   workflow_dispatch:
-  pull_request:
 
 env:
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
