@@ -64,19 +64,19 @@ jobs:
     secrets:
       AZURE_SP: ${{ secrets.AZURE_SP }}
 
-  stac:
-    name: "Keep min tf plan files"
-    needs: apply
-    strategy:
-      matrix:
-        stage: [dev]
-    concurrency: ${{ matrix.stage }}
-    uses: leomozzer/terraform-template/.github/workflows/terraform-files-lifecycle.yml@main
-    with:
-      RESOURCE_GROUP_NAME: "policy-as-code-tfstate-${{ matrix.stage }}-rg"
-      STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
-      CONTAINER_NAME: "plans"
-      MAXIMUM_TERRAFORM_PLAN_FILES: 1
-      GET_TERRAFORM_MODULES: true
-    secrets:
-      AZURE_SP: ${{ secrets.AZURE_SP }}
+  # stac:
+  #   name: "Keep min tf plan files"
+  #   needs: apply
+  #   strategy:
+  #     matrix:
+  #       stage: [dev]
+  #   concurrency: ${{ matrix.stage }}
+  #   uses: leomozzer/terraform-template/.github/workflows/terraform-files-lifecycle.yml@main
+  #   with:
+  #     RESOURCE_GROUP_NAME: "policy-as-code-tfstate-${{ matrix.stage }}-rg"
+  #     STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
+  #     CONTAINER_NAME: "plans"
+  #     MAXIMUM_TERRAFORM_PLAN_FILES: 1
+  #     GET_TERRAFORM_MODULES: true
+  #   secrets:
+  #     AZURE_SP: ${{ secrets.AZURE_SP }}
