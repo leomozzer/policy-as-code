@@ -13,20 +13,9 @@ env:
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
 jobs:
-  audit:
-    name: "Audit"
-    permissions:
-      contents: read
-      pull-requests: write
-    uses: leomozzer/terraform-template/.github/workflows/audit.yml@main
-    with:
-      TERRAFORM_WORKING_DIR: "terraform-live"
-    secrets:
-      INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
-
   plan:
     name: "Terraform"
-    needs: audit
+    if: github.event.pull_request.merged == true
     strategy:
       matrix:
         stage: [dev]
