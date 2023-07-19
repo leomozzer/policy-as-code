@@ -37,6 +37,6 @@ jobs:
       - name: Run Azure PowerShell script
         uses: azure/powershell@v1
         with:
-          inlineScript: ./scripts/AzurePolicy.ps1 -scopeType "management-group" -scope "dev-management-group"
+          inlineScript: ./scripts/AzurePolicy.ps1 -scopeType "management-group" -scope "lso-management-group"
           azPSVersion: "latest"
           errorActionPreference: continue
