@@ -26,13 +26,13 @@ function CreateDefinition {
         switch ($scopeType) {
             "management-group" { 
                 New-AzPolicyDefinition -Name $policyName `
-                -Policy $policyFile `
-                -ManagementGroupName $scope
+                    -Policy $policyFile `
+                    -ManagementGroupName $scope
             }
             "subscriptions" {
                 New-AzPolicyDefinition -Name $policyName `
-                -Policy $policyFile `
-                -SubscriptionId $scope.Split("/")[2]
+                    -Policy $policyFile `
+                    -SubscriptionId $scope.Split("/")[2]
             }
             Default {
                 Write-Output "Cant run CreateDefinition to $policyName"
@@ -45,7 +45,7 @@ function CreateDefinition {
     }
 }
 
-function CreateAssignment{
+function CreateAssignment {
     param(
         [Parameter()]
         [string]
@@ -92,26 +92,67 @@ function CreateAssignment{
 #List of policy definitions
 $policyDefinitions = @(
     [pscustomobject]@{
-        name             = "inherit-rg-tags"
-        skip_remediation = false
-        file_name        = "Inherit Tags from Resource Group"
-        location         = "eastus"
-        category         = "Tags"
-        type             = "policy"
+        name      = "centralized-law"
+        file_name = "Centralized Log Analytics Workspace"
+        location  = "eastus"
+        category  = "Monitoring"
+        type      = "policy"
     },
     [pscustomobject]@{
-        name             = "diagnostic-settings-key-vaults"
-        file_name        = "Diagnostic Settings Key Vaults"
-        location         = "eastus"
-        category         = "Monitoring"
-        type             = "initiative"
+        name      = "deny-new-laws"
+        file_name = "Deny Creation New Log Analytics Workspace"
+        location  = "eastus"
+        category  = "Monitoring"
+        type      = "policy"
     },
     [pscustomobject]@{
-        name             = "diagnostic-settings-azure-functions"
-        file_name        = "Diagnostic Settings Azure Functions"
-        location         = "eastus"
-        category         = "Monitoring"
-        type             = "initiative"
+        name      = "enforce-rg-tags"
+        file_name = "Audit Resource Group Tags"
+        location  = "eastus"
+        category  = "Tags"
+        type      = "policy"
+    },
+    [pscustomobject]@{
+        name      = "inherit-rg-tags"
+        file_name = "Inherit Tags from Resource Group"
+        location  = "eastus"
+        category  = "Tags"
+        type      = "policy"
+    },
+    [pscustomobject]@{
+        name      = "enforce-readonly-lock"
+        file_name = "Enforce Resource Group ReadOnly Lock"
+        location  = "eastus"
+        category  = "General"
+        type      = "policy"
+    },
+    [pscustomobject]@{
+        name      = "enforce-sub-tags"
+        file_name = "Audit Subscription Tags"
+        location  = "eastus"
+        category  = "Tags"
+        type      = "policy"
+    },
+    [pscustomobject]@{
+        name      = "diagnostic-settings-storage-accounts"
+        file_name = "Diagnostic Settings Storage Account"
+        location  = "eastus"
+        category  = "Monitoring"
+        type      = "initiative"
+    },
+    [pscustomobject]@{
+        name      = "diagnostic-settings-key-vaults"
+        file_name = "Diagnostic Settings Key Vaults"
+        location  = "eastus"
+        category  = "Monitoring"
+        type      = "initiative"
+    },
+    [pscustomobject]@{
+        name      = "diagnostic-settings-azure-functions"
+        file_name = "Diagnostic Settings Azure Functions"
+        location  = "eastus"
+        category  = "Monitoring"
+        type      = "initiative"
     }
 )
 
@@ -121,24 +162,24 @@ $initiativeDefinitions = @(
         initiative_display_name = "Configure Diagnostic Settings"
         initiative_category     = "Monitoring"
         initiative_description  = "Deploys and configures Diagnostice Settings"
-        definitions             = @("diagnostic-settings-key-vaults", "diagnostic-settings-azure-functions")
+        definitions             = @("diagnostic-settings-storage-accounts", "diagnostic-settings-key-vaults", "diagnostic-settings-azure-functions")
         assignment_effect       = "DeployIfNotExists"
         location                = "eastus"
     }
 )
 
-foreach($policy in $policyDefinitions){
+foreach ($policy in $policyDefinitions) {
     $filePath = "./policies/$($policy.category)/$($policy.file_name).json"
     CreateDefinition -policyName $policy.file_name -policyFile $filePath
-    if($policy.type -eq "policy"){
+    if ($policy.type -eq "policy") {
         CreateAssignment -type $policy.type -policyName $policy.file_name -location $policy.location
     }
 }
-if($initiativeDefinitions.Length -gt 0){
-    foreach($initiative in $initiativeDefinitions){
+if ($initiativeDefinitions.Length -gt 0) {
+    foreach ($initiative in $initiativeDefinitions) {
         $initiativePolicies = @()
-        foreach($definition in $policyDefinitions){
-            if($initiative.definitions -contains $definition.name){
+        foreach ($definition in $policyDefinitions) {
+            if ($initiative.definitions -contains $definition.name) {
                 $initiativePolicies += [pscustomobject]@{
                     "policyDefinitionId" = (Get-AzPolicyDefinition -Name $definition.file_name).PolicyDefinitionId
                 }
@@ -148,7 +189,7 @@ if($initiativeDefinitions.Length -gt 0){
         $initiativePolicyFile = "./tmp/$($initiative.initiative_name).json"
         $initiativePolicies | ConvertTo-Json -depth 100 | Out-File $initiativePolicyFile
         $validateIFPolicyExists = Get-AzPolicySetDefinition -Name $initiative.initiative_display_name
-        if(!$validateIFPolicyExists){
+        if (!$validateIFPolicyExists) {
             New-AzPolicySetDefinition -Name "$($initiative.initiative_display_name)" `
                 -PolicyDefinition $initiativePolicyFile `
                 -Description "$($initiative.initiative_description)" `
