@@ -10,12 +10,6 @@ on:
       - "scripts/AzurePolicy.ps1"
   workflow_dispatch:
 
-env:
-  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
-
 jobs:
   deploy:
     environment: dev
@@ -24,9 +18,10 @@ jobs:
       - name: Check Out
         uses: actions/checkout@v3
 
-      - run: |
-          mkdir tmp
+      - name: Create tmp folder
         shell: bash
+        run: |
+          mkdir tmp
 
       - name: Login via Az module
         uses: azure/login@v1
@@ -38,5 +33,12 @@ jobs:
         uses: azure/powershell@v1
         with:
           inlineScript: ./scripts/AzurePolicy.ps1 -scopeType "subscriptions" -scope "/subscriptions/${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          azPSVersion: "latest"
+          errorActionPreference: continue
+
+      - name: Run Azure PowerShell script
+        uses: azure/powershell@v1
+        with:
+          inlineScript: ./scripts/AzurePolicy.ps1 -scopeType "management-group" -scope "dev-management-group"
           azPSVersion: "latest"
           errorActionPreference: continue
