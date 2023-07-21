@@ -35,3 +35,10 @@ jobs:
           inlineScript: ./scripts/AzurePolicy.ps1 -scopeType "subscriptions" -scope "/subscriptions/${{ secrets.ARM_SUBSCRIPTION_ID }}"
           azPSVersion: "latest"
           errorActionPreference: continue
+
+      - name: Run Azure PowerShell script
+        uses: azure/powershell@v1
+        with:
+          inlineScript: ./scripts/AzurePolicy.ps1 -scopeType "management-group" -scope "dev-management-group"
+          azPSVersion: "latest"
+          errorActionPreference: continue
