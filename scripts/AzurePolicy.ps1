@@ -49,14 +49,17 @@ function CreateAssignment {
     param(
         [Parameter()]
         [string]
-        [ValidateSet("policy", "initiative")]
+        [ValidateSet("policy", "initiative", "builtin")]
         $type,
         [Parameter()]
         [string]
         $policyName,
         [Parameter()]
         [string]
-        $location
+        $location,
+        [Parameter()]
+        [object]
+        $parameterObject 
 
     )
     try {
@@ -78,6 +81,10 @@ function CreateAssignment {
                     -IdentityType 'SystemAssigned' `
                     -Location $location
             }
+            "builtin" {
+                $Policy = Get-AzPolicyDefinition -BuiltIn | Where-Object { $_.Properties.DisplayName -eq $policyName }
+                New-AzPolicyAssignment -Name $policyName -PolicyDefinition $Policy -Scope $scope -PolicyParameterObject $parameterObject
+            }
             Default {
                 Write-Output "Cant run CreateAssignment to $policyName"
             }
@@ -88,6 +95,15 @@ function CreateAssignment {
         Write-Output $_
     }
 }
+
+#List of bultin policies
+$builtinPolicies = @(
+    [pscustomobject]@{
+        name        = "allowed-locations"
+        displayName = "Allowed locations"
+        parameters  = @{'listOfAllowedLocations' = @("eastus", "centralus", "westeurope", "global") }
+    }
+)
 
 #List of policy definitions
 $policyDefinitions = @(
@@ -154,6 +170,12 @@ $policyDefinitions = @(
         category  = "Monitoring"
         type      = "initiative"
     }
+    [pscustomobject]@{
+        name        = "allowed-locations"
+        displayName = "Allowed locations"
+        parameters  = @{'listOfAllowedLocations' = @("eastus", "centralus", "westeurope", "global") }
+        type        = "builtin"
+    }
 )
 
 $initiativeDefinitions = @(
@@ -169,10 +191,15 @@ $initiativeDefinitions = @(
 )
 
 foreach ($policy in $policyDefinitions) {
-    $filePath = "./policies/$($policy.category)/$($policy.file_name).json"
-    CreateDefinition -policyName $policy.file_name -policyFile $filePath
-    if ($policy.type -eq "policy") {
-        CreateAssignment -type $policy.type -policyName $policy.file_name -location $policy.location
+    if ($policy.type -eq "builtin") {
+        CreateAssignment -type $policy.type -policyName $policy.displayName -parameterObject $policy.parameters
+    }
+    else {
+        $filePath = "./policies/$($policy.category)/$($policy.file_name).json"
+        CreateDefinition -policyName $policy.file_name -policyFile $filePath
+        if ($policy.type -eq "policy") {
+            CreateAssignment -type $policy.type -policyName $policy.file_name -location $policy.location
+        }
     }
 }
 if ($initiativeDefinitions.Length -gt 0) {
