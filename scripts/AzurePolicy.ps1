@@ -246,7 +246,7 @@ if ($initiativeDefinitions.Length -gt 0) {
     }
 }
 
-$mergeDenitions = $policyDefinitions + $initiativeDefinitions
+# $mergeDenitions = $policyDefinitions + $initiativeDefinitions
 
 #Perform a clean up in the Assignments and Custom Definitions 
 # $getPolicyAssignment = Get-AzPolicyAssignment -Scope $scope
