@@ -63,9 +63,15 @@ function CreateAssignment {
 
     )
     try {
+        $retryCounter = 0
         switch ($type) {
             "policy" { 
                 $policyDefinition = Get-AzPolicyDefinition -Name $policyName
+                while (!$policyDefinition -and $retryCounter -le 3) {
+                    $policyDefinition = Get-AzPolicyDefinition -Name $policyName
+                    $retryCounter += 1
+                    Start-Sleep 5
+                }
                 New-AzPolicyAssignment -Name $policyName `
                     -PolicyDefinition $policyDefinition `
                     -Scope $scope `
@@ -74,7 +80,11 @@ function CreateAssignment {
             }
             "initiative" { 
                 $initiativeDefinition = Get-AzPolicySetDefinition -Name $policyName
-                Write-Output $policyDefinition
+                while (!$initiativeDefinition -and $retryCounter -le 3) {
+                    $initiativeDefinition = Get-AzPolicyDefinition -Name $policyName
+                    $retryCounter += 1
+                    Start-Sleep 5
+                }
                 New-AzPolicyAssignment -Name $policyName `
                     -PolicySetDefinition $initiativeDefinition `
                     -Scope $scope `
@@ -235,3 +245,42 @@ if ($initiativeDefinitions.Length -gt 0) {
         Remove-Item -Path $initiativePolicyFile
     }
 }
+
+$mergeDenitions = $policyDefinitions + $initiativeDefinitions
+
+#Perform a clean up in the Assignments and Custom Definitions 
+# $getPolicyAssignment = Get-AzPolicyAssignment -Scope $scope
+# if ($scopeType -eq "management-group") {
+#     $getPolicyDefinitions = Get-AzPolicyDefinition -Custom -ManagementGroupName $scope
+# }
+# else {
+#     $getPolicyDefinitions = Get-AzPolicyDefinition -Custom -SubscriptionId $scope.Split("/")[2]
+# }
+# foreach ($policy in $getPolicyDefinitions) {
+#     Write-Output "Deployed policy $($policy.Name)"
+#     $policyFound = $false
+#     foreach ($definedPolicy in $policyDefinitions) {
+#         if ($policy.Name -eq $definedPolicy.file_name) {
+#             $policyFound = $true
+#         }
+#     }
+#     Write-Output "policyFound $policyFound"
+#     Start-Sleep 5
+#     # if (!$policyFound) {
+
+#     # }
+# }
+
+# foreach ($assignment in $getPolicyAssignment) {
+#     Write-Output "Deployed assignment $($assignment.Name)"
+#     $assignmentFound = $false
+#     foreach ($definition in $mergeDenitions) {
+#         if (($assignment.Name -eq $definition.file_name) -or ($assignment.Name -eq $definition.displayName) -or ($assignment.Name -eq $definition.initiative_display_name)) {
+#             $assignmentFound = $true
+#         }
+#     }
+#     Write-Output "policyFound $assignmentFound"
+#     if (!$assignmentFound) {
+#         Remove-AzPolicyAssignment -Name $assignment.Name -Scope $scope -Confirm:$false
+#     }
+# }
