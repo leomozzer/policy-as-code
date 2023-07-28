@@ -49,20 +49,29 @@ function CreateAssignment {
     param(
         [Parameter()]
         [string]
-        [ValidateSet("policy", "initiative")]
+        [ValidateSet("policy", "initiative", "builtin")]
         $type,
         [Parameter()]
         [string]
         $policyName,
         [Parameter()]
         [string]
-        $location
+        $location,
+        [Parameter()]
+        [object]
+        $parameterObject 
 
     )
     try {
+        $retryCounter = 0
         switch ($type) {
             "policy" { 
                 $policyDefinition = Get-AzPolicyDefinition -Name $policyName
+                while (!$policyDefinition -and $retryCounter -le 3) {
+                    $policyDefinition = Get-AzPolicyDefinition -Name $policyName
+                    $retryCounter += 1
+                    Start-Sleep 5
+                }
                 New-AzPolicyAssignment -Name $policyName `
                     -PolicyDefinition $policyDefinition `
                     -Scope $scope `
@@ -71,12 +80,20 @@ function CreateAssignment {
             }
             "initiative" { 
                 $initiativeDefinition = Get-AzPolicySetDefinition -Name $policyName
-                Write-Output $policyDefinition
+                while (!$initiativeDefinition -and $retryCounter -le 3) {
+                    $initiativeDefinition = Get-AzPolicyDefinition -Name $policyName
+                    $retryCounter += 1
+                    Start-Sleep 5
+                }
                 New-AzPolicyAssignment -Name $policyName `
                     -PolicySetDefinition $initiativeDefinition `
                     -Scope $scope `
                     -IdentityType 'SystemAssigned' `
                     -Location $location
+            }
+            "builtin" {
+                $Policy = Get-AzPolicyDefinition -BuiltIn | Where-Object { $_.Properties.DisplayName -eq $policyName }
+                New-AzPolicyAssignment -Name $policyName -PolicyDefinition $Policy -Scope $scope -PolicyParameterObject $parameterObject
             }
             Default {
                 Write-Output "Cant run CreateAssignment to $policyName"
@@ -88,6 +105,15 @@ function CreateAssignment {
         Write-Output $_
     }
 }
+
+#List of bultin policies
+$builtinPolicies = @(
+    [pscustomobject]@{
+        name        = "allowed-locations"
+        displayName = "Allowed locations"
+        parameters  = @{'listOfAllowedLocations' = @("eastus", "centralus", "westeurope", "global") }
+    }
+)
 
 #List of policy definitions
 $policyDefinitions = @(
@@ -154,6 +180,12 @@ $policyDefinitions = @(
         category  = "Monitoring"
         type      = "initiative"
     }
+    [pscustomobject]@{
+        name        = "allowed-locations"
+        displayName = "Allowed locations"
+        parameters  = @{'listOfAllowedLocations' = @("eastus", "centralus", "westeurope", "global") }
+        type        = "builtin"
+    }
 )
 
 $initiativeDefinitions = @(
@@ -169,10 +201,15 @@ $initiativeDefinitions = @(
 )
 
 foreach ($policy in $policyDefinitions) {
-    $filePath = "./policies/$($policy.category)/$($policy.file_name).json"
-    CreateDefinition -policyName $policy.file_name -policyFile $filePath
-    if ($policy.type -eq "policy") {
-        CreateAssignment -type $policy.type -policyName $policy.file_name -location $policy.location
+    if ($policy.type -eq "builtin") {
+        CreateAssignment -type $policy.type -policyName $policy.displayName -parameterObject $policy.parameters
+    }
+    else {
+        $filePath = "./policies/$($policy.category)/$($policy.file_name).json"
+        CreateDefinition -policyName $policy.file_name -policyFile $filePath
+        if ($policy.type -eq "policy") {
+            CreateAssignment -type $policy.type -policyName $policy.file_name -location $policy.location
+        }
     }
 }
 if ($initiativeDefinitions.Length -gt 0) {
@@ -208,3 +245,42 @@ if ($initiativeDefinitions.Length -gt 0) {
         Remove-Item -Path $initiativePolicyFile
     }
 }
+
+# $mergeDenitions = $policyDefinitions + $initiativeDefinitions
+
+#Perform a clean up in the Assignments and Custom Definitions 
+# $getPolicyAssignment = Get-AzPolicyAssignment -Scope $scope
+# if ($scopeType -eq "management-group") {
+#     $getPolicyDefinitions = Get-AzPolicyDefinition -Custom -ManagementGroupName $scope
+# }
+# else {
+#     $getPolicyDefinitions = Get-AzPolicyDefinition -Custom -SubscriptionId $scope.Split("/")[2]
+# }
+# foreach ($policy in $getPolicyDefinitions) {
+#     Write-Output "Deployed policy $($policy.Name)"
+#     $policyFound = $false
+#     foreach ($definedPolicy in $policyDefinitions) {
+#         if ($policy.Name -eq $definedPolicy.file_name) {
+#             $policyFound = $true
+#         }
+#     }
+#     Write-Output "policyFound $policyFound"
+#     Start-Sleep 5
+#     # if (!$policyFound) {
+
+#     # }
+# }
+
+# foreach ($assignment in $getPolicyAssignment) {
+#     Write-Output "Deployed assignment $($assignment.Name)"
+#     $assignmentFound = $false
+#     foreach ($definition in $mergeDenitions) {
+#         if (($assignment.Name -eq $definition.file_name) -or ($assignment.Name -eq $definition.displayName) -or ($assignment.Name -eq $definition.initiative_display_name)) {
+#             $assignmentFound = $true
+#         }
+#     }
+#     Write-Output "policyFound $assignmentFound"
+#     if (!$assignmentFound) {
+#         Remove-AzPolicyAssignment -Name $assignment.Name -Scope $scope -Confirm:$false
+#     }
+# }
