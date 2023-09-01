@@ -179,6 +179,13 @@ $policyDefinitions = @(
         location  = "eastus"
         category  = "Monitoring"
         type      = "initiative"
+    },
+    [pscustomobject]@{
+        name      = "diagnostic-settings-virtual-networks"
+        file_name = "Diagnostic Settings Virtual Networks"
+        location  = "eastus"
+        category  = "Monitoring"
+        type      = "initiative"
     }
     [pscustomobject]@{
         name        = "allowed-locations"
