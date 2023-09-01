@@ -194,7 +194,7 @@ $initiativeDefinitions = @(
         initiative_display_name = "Configure Diagnostic Settings"
         initiative_category     = "Monitoring"
         initiative_description  = "Deploys and configures Diagnostice Settings"
-        definitions             = @("diagnostic-settings-storage-accounts", "diagnostic-settings-key-vaults", "diagnostic-settings-azure-functions")
+        definitions             = @("diagnostic-settings-storage-accounts", "diagnostic-settings-key-vaults", "diagnostic-settings-azure-functions", "diagnostic-settings-virtual-networks")
         assignment_effect       = "DeployIfNotExists"
         location                = "eastus"
     }

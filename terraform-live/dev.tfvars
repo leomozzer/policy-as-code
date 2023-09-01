@@ -70,6 +70,14 @@ policy_definitions = [
     location         = "eastus"
     category         = "Monitoring"
     type             = "initiative"
+  },
+  {
+    name             = "diagnostic-settings-virtual-networks"
+    skip_remediation = false
+    file_name        = "Diagnostic Settings Virtual Networks"
+    location         = "eastus"
+    category         = "Monitoring"
+    type             = "initiative"
   }
 ]
 
@@ -80,7 +88,7 @@ initiative_definitions = [
     initiative_category     = "Monitoring",
     initiative_description  = "Deploys and configures Diagnostice Settings"
     merge_effects           = false
-    definitions             = ["diagnostic-settings-storage-accounts", "diagnostic-settings-key-vaults", "diagnostic-settings-azure-functions"]
+    definitions             = ["diagnostic-settings-storage-accounts", "diagnostic-settings-key-vaults", "diagnostic-settings-azure-functions", "diagnostic-settings-virtual-networks"]
     assignment_effect       = "DeployIfNotExists"
     skip_role_assignment    = false
     skip_remediation        = false
