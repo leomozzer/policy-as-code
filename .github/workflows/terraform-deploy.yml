@@ -55,19 +55,23 @@ jobs:
     secrets:
       AZURE_SP: ${{ secrets.AZURE_SP }}
 
-  # stac:
-  #   name: "Keep min tf plan files"
-  #   needs: apply
-  #   strategy:
-  #     matrix:
-  #       stage: [dev]
-  #   concurrency: ${{ matrix.stage }}
-  #   uses: leomozzer/terraform-template/.github/workflows/terraform-files-lifecycle.yml@main
-  #   with:
-  #     RESOURCE_GROUP_NAME: "policy-as-code-tfstate-${{ matrix.stage }}-rg"
-  #     STORAGE_ACCOUNT_NAME: "stacpolicyascode${{ matrix.stage }}"
-  #     CONTAINER_NAME: "plans"
-  #     MAXIMUM_TERRAFORM_PLAN_FILES: 1
-  #     GET_TERRAFORM_MODULES: true
-  #   secrets:
-  #     AZURE_SP: ${{ secrets.AZURE_SP }}
+  stac:
+    name: "Keep min tf plan files"
+    needs: apply
+    strategy:
+      matrix:
+        stage: [dev]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login via Az module
+        uses: azure/login@v1
+        with:
+          creds: ${{secrets.AZURE_SP}}
+          enable-AzPSSession: true
+
+      - name: Run Azure PowerShell script
+        uses: azure/powershell@v1
+        with:
+          inlineScript: ./scripts/CleanPlanContainer.ps1 -resourceGroupName "policy-as-code-tfstate-${{ matrix.stage }}-rg" -storageAccountName "stacpolicyascode${{ matrix.stage }}" -containerName "plans" -maximumTerraformPlanFiles 1 -getTerraformModules $true
+          azPSVersion: "latest"
+          errorActionPreference: continue
