@@ -179,6 +179,13 @@ $policyDefinitions = @(
         location  = "eastus"
         category  = "Monitoring"
         type      = "initiative"
+    },
+    [pscustomobject]@{
+        name      = "diagnostic-settings-virtual-networks"
+        file_name = "Diagnostic Settings Virtual Networks"
+        location  = "eastus"
+        category  = "Monitoring"
+        type      = "initiative"
     }
     [pscustomobject]@{
         name        = "allowed-locations"
@@ -194,7 +201,7 @@ $initiativeDefinitions = @(
         initiative_display_name = "Configure Diagnostic Settings"
         initiative_category     = "Monitoring"
         initiative_description  = "Deploys and configures Diagnostice Settings"
-        definitions             = @("diagnostic-settings-storage-accounts", "diagnostic-settings-key-vaults", "diagnostic-settings-azure-functions")
+        definitions             = @("diagnostic-settings-storage-accounts", "diagnostic-settings-key-vaults", "diagnostic-settings-azure-functions", "diagnostic-settings-virtual-networks")
         assignment_effect       = "DeployIfNotExists"
         location                = "eastus"
     }
